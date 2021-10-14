@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Assignments {
+  id           String    @id
+  curriculumId String
+  name         String
+  grade        Decimal
+  description  String
+  dueDate      DateTime
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime?
+}
+
+model Curriculumns {
+  id         String @id
+  subjectId  String
+  studentIds Json
+  name       String
+}
+
+model Student {
+  id        String    @id @default(cuid())
+  name      String
+  subjects  Subject[]
+}
+
+model Subject {
+  id         String @id @default(cuid())
+  name       String
+  students    Student[]
+}
