@@ -5,7 +5,9 @@
     "prisma": "2.27.0"
   },
   "scripts": {
-    "start": "dotenv nodemon server.ts"
+    "start": "cross-env DB_PORT=5432 && yarn test-db-up && sleep 3 && dotenv nodemon server.ts",
+    "test-db-up": "docker-compose -p gradebook -f ./docker/docker-compose.test.yaml up -d && sleep 2 && yarn db-migrate",
+    "db-migrate": "npx prisma migrate dev"
   },
   "name": "gradebook-api",
   "version": "1.0.0",
@@ -14,6 +16,7 @@
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^16.10.9",
+    "cross-env": "^7.0.3",
     "dotenv-cli": "^4.0.0",
     "nodemon": "^2.0.13",
     "ts-node": "^10.3.0",
