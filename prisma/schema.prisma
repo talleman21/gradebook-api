@@ -18,10 +18,8 @@ model Assignments {
   updatedAt    DateTime?
 }
 
-model Curriculumns {
-  id         String @id
-  subjectId  String
-  studentIds Json
+model Curriculum {
+  id         String @id @default(cuid())
   name       String
 }
 
