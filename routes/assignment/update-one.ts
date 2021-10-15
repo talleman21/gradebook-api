@@ -8,7 +8,7 @@ export const updateOne = async (req:Request,res:Response)=>{
       name:req.body.name,
       grade:req.body.grade,
       description:req.body.description,
-      dueDate:req.body.dueDate
+      dueDate:new Date(req.body.dueDate)
     }
   })
 
