@@ -7,7 +7,8 @@ export const create = async (req:Request,res:Response)=>{
       name:req.body.name,
       grade:req.body.grade,
       description:req.body.description,
-      dueDate:new Date(req.body.dueDate)
+      dueDate:new Date(req.body.dueDate),
+      curriculumId:req.body.curriculumId
     }
   })
 

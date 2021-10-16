@@ -6,6 +6,7 @@ export const updateOne = async (req:Request,res:Response)=>{
     where:{id:req.params.id},
     data:{
       name:req.body.name,
+      subjectId:req.body.subjectId
     }
   })
 
