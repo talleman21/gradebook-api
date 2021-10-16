@@ -7,27 +7,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Assignment {
-  id           String    @id @default(cuid())
-  name         String
-  grade        Decimal
-  description  String
-  dueDate      DateTime
-}
-
-model Curriculum {
-  id         String @id @default(cuid())
-  name       String
+model Instructor {
+  id String @id @default(cuid())
+  name String
+  students Student[]
 }
 
 model Student {
   id        String    @id @default(cuid())
   name      String
   subjects  Subject[]
+  instructors Instructor[]
 }
 
 model Subject {
   id         String @id @default(cuid())
   name       String
   students    Student[]
+  curriculums  Curriculum[]
 }
+
+model Curriculum {
+  id         String @id @default(cuid())
+  name       String
+  subject    Subject @relation(fields: [subjectId],references: [id])
+  subjectId  String
+  assignments Assignment[]
+}
+
+model Assignment {
+  id           String    @id @default(cuid())
+  name         String
+  grade        Decimal
+  description  String
+  dueDate      DateTime
+  curriculum   Curriculum @relation(fields: [curriculumId],references: [id])
+  curriculumId  String
+}
+
+
