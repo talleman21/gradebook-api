@@ -1,11 +1,19 @@
-import {Request,Response} from 'express'
+import {NextFunction, Request,Response} from 'express'
 import { prisma } from '../../shared'
+import { validateIdInParams } from '../../validation'
 
-export const deleteOne = async (req:Request,res:Response)=>{
-  const deletedAssignment = await prisma.assignment.delete({
-    where:{id:req.params.id}
-  })
+export const deleteOne = async (req:Request,res:Response,next:NextFunction)=>{
+  try {
+    const id = await validateIdInParams(req.params)
   
-  res.send(deletedAssignment)
+    const deletedAssignment = await prisma.assignment.delete({
+      where:{id}
+    })
+    
+    res.send(deletedAssignment)
+    
+  } catch (error) {
+    next(error)
+  }
 }
 

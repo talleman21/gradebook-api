@@ -3,7 +3,7 @@ CREATE TABLE "Instructor" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Instructor_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -11,7 +11,7 @@ CREATE TABLE "Student" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Student_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -19,7 +19,7 @@ CREATE TABLE "Subject" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Subject_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -28,7 +28,7 @@ CREATE TABLE "Curriculum" (
     "name" TEXT NOT NULL,
     "subjectId" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Curriculum_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -40,7 +40,7 @@ CREATE TABLE "Assignment" (
     "dueDate" TIMESTAMP(3) NOT NULL,
     "curriculumId" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Assignment_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -68,10 +68,10 @@ CREATE UNIQUE INDEX "_StudentToSubject_AB_unique" ON "_StudentToSubject"("A", "B
 CREATE INDEX "_StudentToSubject_B_index" ON "_StudentToSubject"("B");
 
 -- AddForeignKey
-ALTER TABLE "Curriculum" ADD FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Curriculum" ADD CONSTRAINT "Curriculum_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Assignment" ADD FOREIGN KEY ("curriculumId") REFERENCES "Curriculum"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Assignment" ADD CONSTRAINT "Assignment_curriculumId_fkey" FOREIGN KEY ("curriculumId") REFERENCES "Curriculum"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_InstructorToStudent" ADD FOREIGN KEY ("A") REFERENCES "Instructor"("id") ON DELETE CASCADE ON UPDATE CASCADE;

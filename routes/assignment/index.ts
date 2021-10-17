@@ -7,8 +7,8 @@ import {deleteOne} from './delete-one'
 
 export const assignment = express.Router()
 
-assignment.get('/',(req,res) => getMany(req,res))
-assignment.get('/:id',(req,res) => getOne(req,res))
-assignment.post('/',(req,res) => create(req,res))
-assignment.put('/:id',(req,res) => updateOne(req,res))
-assignment.delete('/:id',(req,res) => deleteOne(req,res))
+assignment.get('/',getMany)
+assignment.get('/:id',getOne)
+assignment.post('/',create)
+assignment.put('/:id',updateOne)
+assignment.delete('/:id',deleteOne)
