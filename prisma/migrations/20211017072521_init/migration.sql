@@ -35,7 +35,7 @@ CREATE TABLE "Curriculum" (
 CREATE TABLE "Assignment" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "grade" DECIMAL(65,30) NOT NULL,
+    "grade" INTEGER NOT NULL,
     "description" TEXT NOT NULL,
     "dueDate" TIMESTAMP(3) NOT NULL,
     "curriculumId" TEXT NOT NULL,
