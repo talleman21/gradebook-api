@@ -13,6 +13,7 @@ export const getOne = async (req:Request,res:Response,next:NextFunction)=>{
     res.send(assignment)
     
   } catch (error) {
+    console.log(error)
     next(error)
   }  
 }
