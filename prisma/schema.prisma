@@ -38,7 +38,7 @@ model Curriculum {
 model Assignment {
   id           String    @id @default(cuid())
   name         String
-  grade        Decimal
+  grade        Int
   description  String
   dueDate      DateTime
   curriculum   Curriculum @relation(fields: [curriculumId],references: [id])

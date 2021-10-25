@@ -12,7 +12,7 @@ export const updateOne = async (req:Request,res:Response,next:NextFunction)=>{
     })
   
     res.send(updatedAssignment)    
-  } catch (error) {
+  } catch (error) {    
     next(error)
   }
 }

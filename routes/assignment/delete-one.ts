@@ -12,7 +12,7 @@ export const deleteOne = async (req:Request,res:Response,next:NextFunction)=>{
     
     res.send(deletedAssignment)
     
-  } catch (error) {
+  } catch (error) {    
     next(error)
   }
 }
