@@ -1,1 +1,2 @@
-export * from './assigment'
+export * from './assignment'
+export * from './curriculum'
