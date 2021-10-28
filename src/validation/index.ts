@@ -1,3 +1,3 @@
-export * from './validate-curriculum-in-body';
-export * from './validate-assignment-in-body';
-export * from './validate-id-in-params';
+export * from "./validate-curriculum-in-body";
+export * from "./validate-assignment-in-body";
+export * from "./validate-id-in-params";

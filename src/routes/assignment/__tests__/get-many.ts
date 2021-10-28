@@ -1,42 +1,43 @@
-import {getMany} from '../get-many';
-import { response,request } from 'express';
-import { prisma } from '../../../shared';
-import {assignment01} from '../../../sample-data';
+import { getMany } from "../get-many";
+import { response, request } from "express";
+import { prisma } from "../../../shared";
+import { assignment01 } from "../../../sample-data";
 
-describe('assignment-getMany',()=>{
-	const req=request;
-	const res=response;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	let next:any;
-	let getManyResponse: jest.SpyInstance;
+describe("assignment-getMany", () => {
+  const req = request;
+  const res = response;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let next: any;
+  let getManyResponse: jest.SpyInstance;
 
-	beforeEach(()=>{
-		next = jest.fn();
-		getManyResponse = jest.spyOn(res,'send');
-	});
+  beforeEach(() => {
+    next = jest.fn();
+    getManyResponse = jest.spyOn(res, "send");
+  });
 
-	afterAll(()=>{
-		prisma.$disconnect();
-		jest.clearAllMocks();
-	});
+  afterAll(() => {
+    prisma.$disconnect();
+    jest.clearAllMocks();
+  });
 
-	it('responds with array of assignments',async()=>{
-		//when
-		jest.spyOn(prisma.assignment,'findMany').mockResolvedValue([assignment01()]);
-    
-		await getMany(req,res,next);
+  it("responds with array of assignments", async () => {
+    //when
+    jest
+      .spyOn(prisma.assignment, "findMany")
+      .mockResolvedValue([assignment01()]);
 
-		//then
-		expect(getManyResponse).toHaveBeenCalledWith([assignment01()]);
-	});
+    await getMany(req, res, next);
 
-	it('responds with empty array if no assignments found',async()=>{
-    
-		//when
-		jest.spyOn(prisma.assignment,'findMany').mockResolvedValue([]);    
-		await getMany(req,res,next);
+    //then
+    expect(getManyResponse).toHaveBeenCalledWith([assignment01()]);
+  });
 
-		//then
-		expect(getManyResponse).toHaveBeenCalledWith([]);
-	});
+  it("responds with empty array if no assignments found", async () => {
+    //when
+    jest.spyOn(prisma.assignment, "findMany").mockResolvedValue([]);
+    await getMany(req, res, next);
+
+    //then
+    expect(getManyResponse).toHaveBeenCalledWith([]);
+  });
 });
