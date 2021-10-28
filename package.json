@@ -12,7 +12,8 @@
     "start": "cross-env DB_PORT=5432 && yarn test-db-up && sleep 3 && dotenv ts-node-dev server.ts",
     "test-db-up": "docker-compose -p gradebook -f ./docker/docker-compose.test.yaml up -d && sleep 2 && yarn db-migrate",
     "db-migrate": "npx prisma migrate dev",
-    "test": "jest"
+    "test": "jest",
+    "format":"yarn run eslint src"
   },
   "name": "gradebook-api",
   "version": "1.0.0",
@@ -21,8 +22,11 @@
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^16.10.9",
+    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "@typescript-eslint/parser": "^5.2.0",
     "cross-env": "^7.0.3",
     "dotenv-cli": "^4.0.0",
+    "eslint": "^8.1.0",
     "jest": "^27.2.5",
     "jest-mock-extended": "^2.0.4",
     "nodemon": "^2.0.13",
