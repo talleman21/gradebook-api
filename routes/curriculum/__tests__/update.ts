@@ -1,10 +1,10 @@
 import {updateOne} from '../update'
 import { response,request } from 'express'
 import { prisma } from '../../../shared'
-import {assignment01} from '../../../sample-data'
+import {getCurriculum01} from '../../../sample-data'
 import createHttpError from 'http-errors'
 
-describe('assignment-update',()=>{
+describe('curriculum-update',()=>{
   let req=request
   let res=response
   let next:any
@@ -14,7 +14,7 @@ describe('assignment-update',()=>{
   let error: any
 
   beforeEach(()=>{
-    req.body = assignment01()
+    req.body = getCurriculum01()
     req.params = {id:"1"}
     delete req.body.id
     next = jest.fn()
@@ -25,9 +25,9 @@ describe('assignment-update',()=>{
     jest.clearAllMocks()
   })
 
-  it('responds with created assignment',async()=>{
+  it('responds with created curriculum',async()=>{
     //when
-    const prismaResponse = jest.spyOn(prisma.assignment,'update').mockResolvedValue(assignment01())
+    const prismaResponse = jest.spyOn(prisma.curriculum,'update').mockResolvedValue(getCurriculum01())
     const updateResponse = jest.spyOn(res,'send')
     await updateOne(req,res,next)
 
@@ -36,7 +36,7 @@ describe('assignment-update',()=>{
       where:{id:"1"},
       data:req.body
     })
-    expect(updateResponse).toHaveBeenCalledWith(assignment01())
+    expect(updateResponse).toHaveBeenCalledWith(getCurriculum01())
   })
 
   it('rejects with a bad request error when missing required field',async()=>{
@@ -61,7 +61,7 @@ describe('assignment-update',()=>{
     expect(next).toHaveBeenCalledWith(createHttpError(400,'"unknownField" is not allowed'))
   })
 
-  it('rejects with prisma known error when assignment id not found',async()=>{
+  it('rejects with prisma known error when curriculum id not found',async()=>{
     //given
     req.params.id = "2"
     errorCode = 'P2025'
@@ -70,7 +70,7 @@ describe('assignment-update',()=>{
     error = {errorCode,clientVersion,meta}
 
     //when
-    jest.spyOn(prisma.assignment,'update').mockRejectedValue(error)    
+    jest.spyOn(prisma.curriculum,'update').mockRejectedValue(error)    
     await updateOne(req,res,next)
 
     //then
@@ -79,14 +79,14 @@ describe('assignment-update',()=>{
 
   it('rejects with prisma known error when curriculumId not found',async()=>{
     //given
-    req.body.curriculumId = 'invalid curriculum id'
+    req.body.subjectId = 'invalid subject id'
     errorCode = 'P2003'
     clientVersion = '3.2.1'
-    meta = { field_name: 'Assignment_curriculumId_fkey (index)'}
+    meta = { field_name: 'Curriculum_subjectId_fkey (index)'}
     error = {errorCode,clientVersion,meta}
 
     //when
-    jest.spyOn(prisma.assignment,'update').mockRejectedValue(error)    
+    jest.spyOn(prisma.curriculum,'update').mockRejectedValue(error)    
     await updateOne(req,res,next)
 
     //then

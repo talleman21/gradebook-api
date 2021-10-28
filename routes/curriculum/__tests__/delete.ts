@@ -1,9 +1,9 @@
 import {deleteOne} from '../delete'
 import { response,request } from 'express'
 import { prisma } from '../../../shared'
-import {assignment01} from '../../../sample-data'
+import {getCurriculum01} from '../../../sample-data'
 
-describe('assignment-delete',()=>{
+describe('curriculum-delete',()=>{
   let req=request
   let res=response
   let next:any
@@ -22,9 +22,9 @@ describe('assignment-delete',()=>{
     jest.clearAllMocks()
   })
 
-  it('responds with deleted assignment',async()=>{
+  it('responds with deleted curriculum',async()=>{
     //when
-    const prismaResponse = jest.spyOn(prisma.assignment,'delete').mockResolvedValue(assignment01())
+    const prismaResponse = jest.spyOn(prisma.curriculum,'delete').mockResolvedValue(getCurriculum01())
     const deleteResponse = jest.spyOn(res,'send')
     await deleteOne(req,res,next)
 
@@ -32,10 +32,10 @@ describe('assignment-delete',()=>{
     expect(prismaResponse).toHaveBeenCalledWith({
       where:{id:"1"}
     })
-    expect(deleteResponse).toHaveBeenCalledWith(assignment01())
+    expect(deleteResponse).toHaveBeenCalledWith(getCurriculum01())
   })
 
-  it('rejects with prisma known error when assignment id not found',async()=>{
+  it('rejects with prisma known error when curriculum id not found',async()=>{
     //given
     req.params.id = "2"
     errorCode = 'P2025'
@@ -44,7 +44,7 @@ describe('assignment-delete',()=>{
     error = {errorCode,clientVersion,meta}
 
     //when
-    jest.spyOn(prisma.assignment,'delete').mockRejectedValue(error)    
+    jest.spyOn(prisma.curriculum,'delete').mockRejectedValue(error)    
     await deleteOne(req,res,next)
 
     //then
