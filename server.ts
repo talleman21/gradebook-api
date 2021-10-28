@@ -7,7 +7,7 @@ import {
   subject,
   curriculum,
   assignment, 
-  instructor} from './routes'
+  instructor} from './src/routes'
 
 
 app.use(express.json())
