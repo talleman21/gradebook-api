@@ -1,4 +1,4 @@
-import {updateOne} from '../update-one'
+import {updateOne} from '../update'
 import { response,request } from 'express'
 import { prisma } from '../../../shared'
 import {assignment01} from '../../../sample-data'

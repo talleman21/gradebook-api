@@ -1,4 +1,4 @@
-import {deleteOne} from '../delete-one'
+import {deleteOne} from '../delete'
 import { response,request } from 'express'
 import { prisma } from '../../../shared'
 import {assignment01} from '../../../sample-data'

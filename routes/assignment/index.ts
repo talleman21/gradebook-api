@@ -2,8 +2,8 @@ import express from 'express'
 import {getOne} from './get-one'
 import {getMany} from './get-many'
 import {create} from './create'
-import {updateOne} from './update-one'
-import {deleteOne} from './delete-one'
+import {updateOne} from './update'
+import {deleteOne} from './delete'
 
 export const assignment = express.Router()
 
