@@ -2,5 +2,5 @@
 . "$(dirname "$0")/_/husky.sh"
 . "$(dirname "$0")/common.sh"
 
-yarn run eslint . "$1"
+yarn run eslint src "$1"
 yarn test
