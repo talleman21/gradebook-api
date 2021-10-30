@@ -16,7 +16,6 @@ export const getOne = async (
 
     res.send(curriculum);
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

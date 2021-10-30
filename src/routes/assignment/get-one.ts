@@ -16,7 +16,6 @@ export const getOne = async (
 
     res.send(assignment);
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
