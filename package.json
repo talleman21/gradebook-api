@@ -13,7 +13,8 @@
     "test-db-up": "docker-compose -p gradebook -f ./docker/docker-compose.test.yaml up -d && sleep 2 && yarn db-migrate",
     "db-migrate": "npx prisma migrate dev",
     "test": "jest",
-    "format": "yarn run eslint src && yarn prettier --write src"
+    "format": "yarn run eslint src && yarn prettier --write src",
+    "prepare": "husky install"
   },
   "name": "gradebook-api",
   "version": "1.0.0",
@@ -28,6 +29,7 @@
     "dotenv-cli": "^4.0.0",
     "eslint": "^8.1.0",
     "eslint-config-prettier": "^8.3.0",
+    "husky": "^7.0.4",
     "jest": "^27.2.5",
     "jest-mock-extended": "^2.0.4",
     "nodemon": "^2.0.13",
