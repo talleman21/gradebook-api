@@ -9,8 +9,8 @@
     "prisma": "^3.2.1"
   },
   "scripts": {
-    "start": "cross-env DB_PORT=5432 && yarn test-db-up && sleep 3 && dotenv ts-node-dev server.ts",
-    "pre-push": "cross-env DB_PORT=5432 PORT=3002 && yarn test-db-up && sleep 3 && dotenv ts-node server.ts && yarn test",
+    "start": "cross-env DB_PORT=5432 APORT=3001 && yarn test-db-up && sleep 3 && dotenv ts-node-dev server.ts",
+    "pre-push": "cross-env DB_PORT=5432 APORT=3002 && yarn test-db-up && sleep 3 && dotenv ts-node server.ts && yarn test",
     "test-db-up": "docker-compose -p gradebook -f ./docker/docker-compose.test.yaml up -d && sleep 2 && yarn db-migrate",
     "db-migrate": "npx prisma migrate dev",
     "test": "jest",
