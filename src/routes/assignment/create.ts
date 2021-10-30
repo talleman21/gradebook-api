@@ -16,7 +16,6 @@ export const create = async (
 
     res.send(createAssignment);
   } catch (error) {
-    // comment here
     next(error);
   }
 };
