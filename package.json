@@ -13,7 +13,7 @@
     "test-db-up": "docker-compose -p gradebook -f ./docker/docker-compose.test.yaml up -d && sleep 2 && yarn db-migrate",
     "db-migrate": "npx prisma migrate dev",
     "test": "jest",
-    "format": "yarn run eslint src && yarn prettier --write src",
+    "format": "yarn run eslint --fix src && yarn prettier --write src",
     "prepare": "husky install"
   },
   "name": "gradebook-api",
