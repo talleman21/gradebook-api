@@ -5,7 +5,7 @@ export const getMany = async (
   req: Request,
   res: Response,
   next: NextFunction
-):Promise<void> => {
+): Promise<void> => {
   try {
     const getCurriculums = await prisma.curriculum.findMany();
 
