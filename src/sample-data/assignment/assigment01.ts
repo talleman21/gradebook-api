@@ -1,6 +1,6 @@
 import { Assignment } from "@prisma/client";
 
-export const assignment01 = ():Assignment => ({
+export const assignment01 = (): Assignment => ({
   id: "TestAssignment01",
   name: "TestAssignment01",
   grade: 87,

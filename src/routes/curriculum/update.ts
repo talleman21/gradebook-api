@@ -6,7 +6,7 @@ export const updateOne = async (
   req: Request,
   res: Response,
   next: NextFunction
-):Promise<void> => {
+): Promise<void> => {
   try {
     const id = await validateIdInParams(req.params);
     const curriculumToUpdate = await validateCurriculumInBody(req.body);

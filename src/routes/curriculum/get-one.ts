@@ -6,7 +6,7 @@ export const getOne = async (
   req: Request,
   res: Response,
   next: NextFunction
-):Promise<void> => {
+): Promise<void> => {
   try {
     const id = await validateIdInParams(req.params);
 
@@ -16,7 +16,6 @@ export const getOne = async (
 
     res.send(curriculum);
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
