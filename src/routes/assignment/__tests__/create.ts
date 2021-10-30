@@ -37,6 +37,7 @@ describe("assignment-create", () => {
 
     //then
     expect(myResponse).toHaveBeenCalledWith(assignment01());
+    expect(true).toEqual(false);
   });
 
   it("rejects with a bad request error when missing required field", async () => {
