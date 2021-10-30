@@ -1,12 +1,16 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../shared";
 
-export const getMany = async (req: Request, res: Response) => {
-  const getInstructors = await prisma.instructor.findMany({
-    include: {
-      students: true,
-    },
-  });
+export const getMany = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const getInstructors = await prisma.instructor.findMany();
 
-  res.send(getInstructors);
+    res.send(getInstructors);
+  } catch (error) {
+    next(error);
+  }
 };
