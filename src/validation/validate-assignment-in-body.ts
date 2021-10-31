@@ -11,7 +11,7 @@ const assignmentInBodySchema = joi.object({
 });
 
 export const validateAssignmentInBody = async (
-  body: Omit<Assignment, "id">
+  body: unknown
 ): Promise<Omit<Assignment, "id">> => {
   try {
     const result = await assignmentInBodySchema.validateAsync(body);

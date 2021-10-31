@@ -8,7 +8,7 @@ const curriculumInBodySchema = joi.object({
 });
 
 export const validateCurriculumInBody = async (
-  body: Omit<Curriculum, "id">
+  body: unknown
 ): Promise<Omit<Curriculum, "id">> => {
   try {
     const result = await curriculumInBodySchema.validateAsync(body);
