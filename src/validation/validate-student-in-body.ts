@@ -9,7 +9,7 @@ const studentInBodySchema = joi.object({
 });
 
 export const validateStudentInBody = async (
-  body: Omit<Student, "id">
+  body: unknown
 ): Promise<
   Omit<Student, "id"> & { instructorIds: string[]; subjectIds: string[] }
 > => {

@@ -8,7 +8,7 @@ const instructorInBodySchema = joi.object({
 });
 
 export const validateInstructorInBody = async (
-  body: Omit<Instructor, "id">
+  body: unknown
 ): Promise<Omit<Instructor, "id"> & { studentIds: string[] }> => {
   try {
     const result = await instructorInBodySchema.validateAsync(body);
