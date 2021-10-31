@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../shared";
 import { validateIdInParams } from "../../validation";
 
-export const getOne = async (
+export const deleteOne = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -10,15 +10,11 @@ export const getOne = async (
   try {
     const id = await validateIdInParams(req.params);
 
-    const student = await prisma.student.findUnique({
+    const deletedStudent = await prisma.student.delete({
       where: { id },
-      include: {
-        instructors: true,
-        subjects: true,
-      },
     });
 
-    res.send(student);
+    res.send(deletedStudent);
   } catch (error) {
     next(error);
   }

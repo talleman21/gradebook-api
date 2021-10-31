@@ -10,6 +10,7 @@ export const updateOne = async (
   try {
     const id = await validateIdInParams(req.params);
     const instructorToUpdate = await validateInstructorInBody(req.body);
+
     const updatedInstructor = await prisma.instructor.update({
       where: { id },
       data: {
