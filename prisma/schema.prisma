@@ -18,6 +18,7 @@ model Student {
   name      String
   subjects  Subject[]
   instructors Instructor[]
+  grades Grade[]
 }
 
 model Subject {
@@ -38,11 +39,23 @@ model Curriculum {
 model Assignment {
   id           String    @id @default(cuid())
   name         String
-  grade        Int
+  grades       Grade[]
   description  String
   dueDate      DateTime
   curriculum   Curriculum @relation(fields: [curriculumId],references: [id])
   curriculumId  String
+
+}
+
+model Grade {
+  id String @id @default(cuid())
+  student Student @relation(fields: [studentId], references:[id])
+  assignment Assignment @relation(fields: [assignmentId], references:[id])
+  studentId String
+  assignmentId String
+  grade Int
+
+  @@unique([studentId,assignmentId],map:"grade_student_assignment_UK")
 }
 
 
