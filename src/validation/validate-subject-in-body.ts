@@ -1,17 +1,30 @@
 import joi from "joi";
-import { Subject } from "@prisma/client";
+import { Subject, Student, Curriculum } from "@prisma/client";
 import createError from "http-errors";
 
 const subjectInBodySchema = joi.object({
+  id: joi.string(),
   name: joi.string().required(),
-  curriculumIds: joi.array().items(joi.string()).required().default([]),
-  studentIds: joi.array().items(joi.string()).required().default([]),
+  curriculums: joi
+    .array()
+    .items(
+      joi.object({
+        id: joi.string(),
+        name: joi.string(),
+        subjectId: joi.string(),
+      })
+    )
+    .default([]),
+  students: joi
+    .array()
+    .items(joi.object({ id: joi.string(), name: joi.string() }))
+    .default([]),
 });
 
 export const validateSubjectInBody = async (
   body: unknown
 ): Promise<
-  Omit<Subject, "id"> & { curriculumIds: string[]; studentIds: string[] }
+  Omit<Subject, "id"> & { curriculums: Curriculum[]; students: Student[] }
 > => {
   try {
     const result = await subjectInBodySchema.validateAsync(body);

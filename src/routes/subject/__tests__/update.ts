@@ -21,8 +21,8 @@ describe("subject-update", () => {
   beforeEach(() => {
     req.body = {
       name: "TestSubject01",
-      studentIds: ["TestStudent01"],
-      curriculumIds: ["TestCurriculum01"],
+      students: [{ id: "TestStudent01", name: "TestStudent01" }],
+      curriculums: [{ id: "TestCurriculum01", name: "TestCurriculum01" }],
     };
     req.params = { id: "TestSubject01" };
     delete req.body.id;
@@ -97,12 +97,12 @@ describe("subject-update", () => {
     expect(next).toHaveBeenCalledWith(error);
   });
 
-  it("rejects with prisma known error when studentId not found", async () => {
+  it("rejects with prisma known error when student not found", async () => {
     //given
-    req.body.studentIds = ["invalid student id"];
+    req.body.students = [{ id: "invalid student id" }];
     errorCode = "P2003";
     clientVersion = "3.2.1";
-    meta = { field_name: "Subject_studentId_fkey (index)" };
+    meta = { field_name: "Subject_student_fkey (index)" };
     error = { errorCode, clientVersion, meta };
 
     //when
@@ -113,12 +113,12 @@ describe("subject-update", () => {
     expect(next).toHaveBeenCalledWith(error);
   });
 
-  it("rejects with prisma known error when curriculumId not found", async () => {
+  it("rejects with prisma known error when curriculum not found", async () => {
     //given
-    req.body.curriculumIds = ["invalid curriculum id"];
+    req.body.curriculums[0].id = "invalid curriculum id";
     errorCode = "P2003";
     clientVersion = "3.2.1";
-    meta = { field_name: "Subject_curriculumId_fkey (index)" };
+    meta = { field_name: "Subject_curriculums_fkey (index)" };
     error = { errorCode, clientVersion, meta };
 
     //when

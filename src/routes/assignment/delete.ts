@@ -16,6 +16,7 @@ export const deleteOne = async (
 
     res.send(deletedAssignment);
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };

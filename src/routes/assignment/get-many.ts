@@ -7,8 +7,8 @@ export const getMany = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    console.log("got a request");
     const getAssignments = await prisma.assignment.findMany();
-
     res.send(getAssignments);
   } catch (error) {
     next(error);

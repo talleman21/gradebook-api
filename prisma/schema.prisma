@@ -31,7 +31,7 @@ model Subject {
 model Curriculum {
   id         String @id @default(cuid())
   name       String
-  subject    Subject @relation(fields: [subjectId],references: [id])
+  subject    Subject @relation(fields: [subjectId],references: [id],onDelete:Cascade)
   subjectId  String
   assignments Assignment[]
 }
@@ -39,18 +39,18 @@ model Curriculum {
 model Assignment {
   id           String    @id @default(cuid())
   name         String
-  grades       Grade[]
+  grades       Grade[]   
   description  String
   dueDate      DateTime
-  curriculum   Curriculum @relation(fields: [curriculumId],references: [id])
+  curriculum   Curriculum @relation(fields: [curriculumId],references: [id], onDelete:Cascade)
   curriculumId  String
 
 }
 
 model Grade {
   id String @id @default(cuid())
-  student Student @relation(fields: [studentId], references:[id])
-  assignment Assignment @relation(fields: [assignmentId], references:[id])
+  student Student @relation(fields: [studentId], references:[id], onDelete:Cascade)
+  assignment Assignment @relation(fields: [assignmentId], references:[id], onDelete:Cascade)
   studentId String
   assignmentId String
   grade Int
