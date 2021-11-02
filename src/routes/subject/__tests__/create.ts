@@ -21,8 +21,8 @@ describe("subject-create", () => {
   beforeEach(() => {
     req.body = {
       name: "TestSubject01",
-      studentIds: ["TestStudent01"],
-      curriculumIds: ["TestCurriculum01"],
+      students: [{ id: "TestStudent01", name: "TestStudent01" }],
+      curriculums: [{ id: "TestCurriculum01", name: "TestCurriculum01" }],
     };
     next = jest.fn();
   });
@@ -70,7 +70,7 @@ describe("subject-create", () => {
 
   it("rejects with prisma known error when student fkey not found", async () => {
     //given
-    req.body.studentIds = ["invalid student id"];
+    req.body.students[0].id = "invalid student id";
     errorCode = "P2003";
     clientVersion = "3.2.1";
     meta = { field_name: "Subject_studentId_fkey (index)" };
@@ -86,7 +86,7 @@ describe("subject-create", () => {
 
   it("rejects with prisma known error when curriculum fkey not found", async () => {
     //given
-    req.body.curriculumIds = ["invalid curriculum id"];
+    req.body.curriculums[0].id = "invalid curriculum id";
     errorCode = "P2003";
     clientVersion = "3.2.1";
     meta = { field_name: "Subject_curriculumId_fkey (index)" };
