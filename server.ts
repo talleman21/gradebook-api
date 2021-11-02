@@ -1,28 +1,41 @@
-import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError } from '@prisma/client/runtime'
-import express,{Request,Response,NextFunction} from 'express'
-const app = express()
-const PORT = process.env.PORT
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+} from "@prisma/client/runtime";
+import express, { Request, Response, NextFunction } from "express";
+const app = express();
+const PORT = process.env.PORT;
 import {
   student,
   subject,
   curriculum,
-  assignment, 
-  instructor} from './src/routes'
+  assignment,
+  instructor,
+  grade,
+} from "./src/routes";
 
+app.use(express.json());
 
-app.use(express.json())
-
-app.use('/instructor',instructor)
-app.use('/student',student)
-app.use('/subject',subject)
-app.use('/curriculum',curriculum)
-app.use('/assignment',assignment)
+app.use("/instructor", instructor);
+app.use("/student", student);
+app.use("/subject", subject);
+app.use("/curriculum", curriculum);
+app.use("/assignment", assignment);
+app.use("/grade", grade);
 
 // error handler
-app.use(function(err:Error & {status:number}|any, req:Request, res:Response, next:NextFunction) {
-  if(err instanceof PrismaClientKnownRequestError || err instanceof PrismaClientUnknownRequestError){
+app.use(function (
+  err: (Error & { status: number }) | any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  if (
+    err instanceof PrismaClientKnownRequestError ||
+    err instanceof PrismaClientUnknownRequestError
+  ) {
     //@ts-ignore
-    console.log(err.code)
+    console.log(err.code);
   }
 
   // render the error page
@@ -30,9 +43,6 @@ app.use(function(err:Error & {status:number}|any, req:Request, res:Response, nex
   res.send(err.message);
 });
 
-
-
-
-app.listen(process.env.PORT,()=>{
-  console.log(`app started on ${PORT}`)
-})
+app.listen(process.env.PORT, () => {
+  console.log(`app started on ${PORT}`);
+});
