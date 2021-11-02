@@ -16,14 +16,10 @@ export const updateOne = async (
       data: {
         name: subjectToUpdate.name,
         students: {
-          connect: subjectToUpdate.studentIds.map((studentId) => ({
-            id: studentId,
-          })),
+          connect: subjectToUpdate.students.map(({ id }) => ({ id })),
         },
         curriculums: {
-          connect: subjectToUpdate.curriculumIds.map((curriculumId) => ({
-            id: curriculumId,
-          })),
+          connect: subjectToUpdate.curriculums.map(({ id }) => ({ id })),
         },
       },
       include: {

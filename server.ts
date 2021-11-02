@@ -3,6 +3,7 @@ import {
   PrismaClientUnknownRequestError,
 } from "@prisma/client/runtime";
 import express, { Request, Response, NextFunction } from "express";
+import cors from "cors";
 const app = express();
 const PORT = process.env.PORT;
 import {
@@ -15,6 +16,19 @@ import {
 } from "./src/routes";
 
 app.use(express.json());
+app.use(
+  cors({
+    allowedHeaders: ["X-Total-Count", "range", "content-type"],
+    exposedHeaders: ["Content-Range"],
+  })
+);
+
+app.use((req, res, next) => {
+  console.log(req.body);
+  res.header("X-Total-Count", "10");
+  res.header("Content-Range", "0-10/10");
+  next();
+});
 
 app.use("/instructor", instructor);
 app.use("/student", student);
@@ -30,6 +44,7 @@ app.use(function (
   res: Response,
   next: NextFunction
 ) {
+  console.log(err.message);
   if (
     err instanceof PrismaClientKnownRequestError ||
     err instanceof PrismaClientUnknownRequestError

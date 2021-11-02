@@ -14,14 +14,10 @@ export const create = async (
       data: {
         name: subjectToCreate.name,
         students: {
-          connect: subjectToCreate.studentIds.map((studentId) => ({
-            id: studentId,
-          })),
+          connect: subjectToCreate.students.map(({ id }) => ({ id })),
         },
         curriculums: {
-          connect: subjectToCreate.curriculumIds.map((curriculumId) => ({
-            id: curriculumId,
-          })),
+          connect: subjectToCreate.curriculums.map(({ id }) => ({ id })),
         },
       },
       include: {

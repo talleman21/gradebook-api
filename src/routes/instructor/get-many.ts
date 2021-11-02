@@ -7,7 +7,11 @@ export const getMany = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const getInstructors = await prisma.instructor.findMany();
+    const getInstructors = await prisma.instructor.findMany({
+      include: {
+        students: true,
+      },
+    });
 
     res.send(getInstructors);
   } catch (error) {
