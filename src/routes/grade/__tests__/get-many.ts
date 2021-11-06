@@ -3,20 +3,20 @@ import { response, request } from "express";
 import { prisma } from "../../../shared";
 import { getGrade01 } from "../../../sample-data";
 
-describe("grade-getMany", () => {
+describe("grade-get-many", () => {
   const req = request;
   const res = response;
+  let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let next: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let returnedGrade: any;
-  let getManyResponse: jest.SpyInstance;
-  let prismaResponse: jest.SpyInstance;
+  let rawGrade: any;
+  let findManyMock: jest.SpyInstance;
 
   beforeEach(() => {
+    rawGrade = getGrade01();
     next = jest.fn();
-    getManyResponse = jest.spyOn(res, "send");
-    returnedGrade = getGrade01();
+    res.send = jest.fn();
+    res.header = jest.fn();
+    findManyMock = jest.spyOn(prisma.grade, "findMany");
   });
 
   afterAll(() => {
@@ -24,31 +24,22 @@ describe("grade-getMany", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with array of grades", async () => {
+  it("responds with valid object array", async () => {
     //when
-    prismaResponse = jest
-      .spyOn(prisma.grade, "findMany")
-      .mockResolvedValue([returnedGrade]);
-
+    findManyMock.mockResolvedValue([rawGrade]);
     await getMany(req, res, next);
 
     //then
-    expect(prismaResponse).toHaveBeenCalledWith({
-      include: {
-        student: true,
-        assignment: true,
-      },
-    });
-
-    expect(getManyResponse).toHaveBeenCalledWith([returnedGrade]);
+    expect(findManyMock).toHaveBeenCalledWith({});
+    expect(res.send).toHaveBeenCalledWith([rawGrade]);
   });
 
-  it("responds with empty array if no grades found", async () => {
+  it("responds with empty array if no records found", async () => {
     //when
-    jest.spyOn(prisma.grade, "findMany").mockResolvedValue([]);
+    findManyMock.mockResolvedValue([]);
     await getMany(req, res, next);
 
     //then
-    expect(getManyResponse).toHaveBeenCalledWith([]);
+    expect(res.send).toHaveBeenCalledWith([]);
   });
 });

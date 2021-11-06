@@ -1,18 +1,25 @@
 import { getMany } from "../get-many";
 import { response, request } from "express";
 import { prisma } from "../../../shared";
-import { getInstructor01 } from "../../../sample-data";
+import { getInstructor01, getInstructorDTO01 } from "../../../sample-data";
 
-describe("instructor-getMany", () => {
+describe("instructor-get-many", () => {
   const req = request;
   const res = response;
+  let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let next: any;
-  let getManyResponse: jest.SpyInstance;
+  let rawInstructor: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let instructorDTO: any;
+  let findManyMock: jest.SpyInstance;
 
   beforeEach(() => {
+    rawInstructor = getInstructor01();
+    instructorDTO = getInstructorDTO01();
     next = jest.fn();
-    getManyResponse = jest.spyOn(res, "send");
+    res.send = jest.fn();
+    res.header = jest.fn();
+    findManyMock = jest.spyOn(prisma.instructor, "findMany");
   });
 
   afterAll(() => {
@@ -20,24 +27,26 @@ describe("instructor-getMany", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with array of instructors", async () => {
+  it("responds with valid object array", async () => {
     //when
-    jest
-      .spyOn(prisma.instructor, "findMany")
-      .mockResolvedValue([getInstructor01()]);
-
+    findManyMock.mockResolvedValue([rawInstructor]);
     await getMany(req, res, next);
 
     //then
-    expect(getManyResponse).toHaveBeenCalledWith([getInstructor01()]);
+    expect(findManyMock).toHaveBeenCalledWith({
+      include: {
+        curriculums: true,
+      },
+    });
+    expect(res.send).toHaveBeenCalledWith([instructorDTO]);
   });
 
-  it("responds with empty array if no instructors found", async () => {
+  it("responds with empty array if no records found", async () => {
     //when
-    jest.spyOn(prisma.instructor, "findMany").mockResolvedValue([]);
+    findManyMock.mockResolvedValue([]);
     await getMany(req, res, next);
 
     //then
-    expect(getManyResponse).toHaveBeenCalledWith([]);
+    expect(res.send).toHaveBeenCalledWith([]);
   });
 });

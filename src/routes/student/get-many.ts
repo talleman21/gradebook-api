@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { getStudentDTO } from "../../formatters";
 import { prisma } from "../../shared";
 
 export const getMany = async (
@@ -9,12 +10,13 @@ export const getMany = async (
   try {
     const getManyStudents = await prisma.student.findMany({
       include: {
-        instructors: true,
-        subjects: true,
+        curriculums: true,
       },
     });
 
-    res.send(getManyStudents);
+    res.header("x-total-count", "10");
+    res.header("content-range", "1-10/10");
+    res.send(getManyStudents.map((student) => getStudentDTO(student)));
   } catch (error) {
     next(error);
   }

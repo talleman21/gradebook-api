@@ -1,27 +1,30 @@
 import { create } from "../create";
 import { response, request } from "express";
 import { prisma } from "../../../shared";
-import { getCurriculum01 } from "../../../sample-data";
-import createHttpError from "http-errors";
+import {
+  getCurriculum01,
+  getCurriculumBodyObject01,
+  getCurriculumDTO01,
+} from "../../../sample-data";
 
 describe("curriculum-create", () => {
   const req = request;
   const res = response;
+  let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let next: any;
+  let rawCurriculum: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let errorCode: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let clientVersion: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let meta: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let error: any;
+  let curriculumDTO: any;
+  let createMock: jest.SpyInstance;
+  let resSend: jest.SpyInstance;
 
   beforeEach(() => {
-    req.body = getCurriculum01();
-    delete req.body.id;
+    req.body = getCurriculumBodyObject01();
+    rawCurriculum = getCurriculum01();
+    curriculumDTO = getCurriculumDTO01();
     next = jest.fn();
+    resSend = jest.spyOn(res, "send");
+    createMock = jest.spyOn(prisma.curriculum, "create");
   });
 
   afterAll(() => {
@@ -29,57 +32,38 @@ describe("curriculum-create", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with created curriculum", async () => {
+  it("responds with valid record", async () => {
     //when
-    jest
-      .spyOn(prisma.curriculum, "create")
-      .mockResolvedValue(getCurriculum01());
-    const myResponse = jest.spyOn(res, "send");
+    createMock.mockResolvedValue(rawCurriculum);
     await create(req, res, next);
 
     //then
-    expect(myResponse).toHaveBeenCalledWith(getCurriculum01());
+    expect(createMock).toHaveBeenCalledWith({
+      data: {
+        name: req.body.name,
+        subject: { connect: { id: req.body.subjectId } },
+        instructor: { connect: { id: req.body.instructorId } },
+        students: {
+          connect: req.body.studentIds.map((id: string) => ({ id })),
+        },
+      },
+      include: {
+        subject: true,
+        instructor: true,
+        students: true,
+        assignments: true,
+      },
+    });
+
+    expect(resSend).toHaveBeenCalledWith(curriculumDTO);
   });
 
-  it("rejects with a bad request error when missing required field", async () => {
-    //given
-    delete req.body.name;
-
+  it("calls next function when error encountered", async () => {
     //when
+    jest.spyOn(prisma.curriculum, "create").mockRejectedValue("error");
     await create(req, res, next);
 
     //then
-    expect(next).toHaveBeenCalledWith(
-      createHttpError(400, '"name" is required')
-    );
-  });
-
-  it("rejects with a bad request error when unknown field provided", async () => {
-    //given
-    req.body.unknownField = "unknown field";
-
-    //when
-    await create(req, res, next);
-
-    //then
-    expect(next).toHaveBeenCalledWith(
-      createHttpError(400, '"unknownField" is not allowed')
-    );
-  });
-
-  it("rejects with prisma known error when fkey not found", async () => {
-    //given
-    req.body.subjectId = "invalid subject id";
-    errorCode = "P2003";
-    clientVersion = "3.2.1";
-    meta = { field_name: "Subject_subjectId_fkey (index)" };
-    error = { errorCode, clientVersion, meta };
-
-    //when
-    jest.spyOn(prisma.curriculum, "create").mockRejectedValue(error);
-    await create(req, res, next);
-
-    //then
-    expect(next).toHaveBeenCalledWith(error);
+    expect(next).toHaveBeenCalledWith("error");
   });
 });

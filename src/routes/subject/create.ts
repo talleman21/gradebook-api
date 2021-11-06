@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../shared";
 import { validateSubjectInBody } from "../../validation";
+import { getSubjectDTO } from "../../formatters";
 
 export const create = async (
   req: Request,
@@ -13,20 +14,16 @@ export const create = async (
     const createSubject = await prisma.subject.create({
       data: {
         name: subjectToCreate.name,
-        students: {
-          connect: subjectToCreate.students.map(({ id }) => ({ id })),
-        },
         curriculums: {
           connect: subjectToCreate.curriculums.map(({ id }) => ({ id })),
         },
       },
       include: {
-        students: true,
         curriculums: true,
       },
     });
 
-    res.send(createSubject);
+    res.send(getSubjectDTO(createSubject));
   } catch (error) {
     next(error);
   }

@@ -1,19 +1,26 @@
 import { getOne } from "../get-one";
 import { response, request } from "express";
 import { prisma } from "../../../shared";
-import { getStudent01 } from "../../../sample-data";
+import { getStudent01, getStudentDTO01 } from "../../../sample-data";
 
 describe("student-get", () => {
   const req = request;
   const res = response;
+  let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let next: any;
-  let getResponse: jest.SpyInstance;
+  let rawStudent: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let studentDTO: any;
+  let findUniqueMock: jest.SpyInstance;
+  let resSend: jest.SpyInstance;
 
   beforeEach(() => {
     req.params = { id: "1" };
+    rawStudent = getStudent01();
+    studentDTO = getStudentDTO01();
     next = jest.fn();
-    getResponse = jest.spyOn(res, "send");
+    resSend = jest.spyOn(res, "send");
+    findUniqueMock = jest.spyOn(prisma.student, "findUnique");
   });
 
   afterAll(() => {
@@ -21,33 +28,30 @@ describe("student-get", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with valid student", async () => {
+  it("responds with valid object", async () => {
     //when
-    const prismaResponse = jest
-      .spyOn(prisma.student, "findUnique")
-      .mockResolvedValue(getStudent01());
+    findUniqueMock.mockResolvedValue(rawStudent);
     await getOne(req, res, next);
 
     //then
-    expect(prismaResponse).toHaveBeenCalledWith({
+    expect(findUniqueMock).toHaveBeenCalledWith({
       where: { id: "1" },
       include: {
-        instructors: true,
-        subjects: true,
+        curriculums: true,
       },
     });
-    expect(getResponse).toHaveBeenCalledWith(getStudent01());
+    expect(resSend).toHaveBeenCalledWith(studentDTO);
   });
 
-  it("responds with null when student id not found", async () => {
+  it("responds with null when id not found", async () => {
     //given
     req.params.id = "2";
 
     //when
-    jest.spyOn(prisma.student, "findUnique").mockResolvedValue(null);
+    findUniqueMock.mockResolvedValue(null);
     await getOne(req, res, next);
 
     //then
-    expect(getResponse).toHaveBeenCalledWith(null);
+    expect(resSend).toHaveBeenCalledWith(null);
   });
 });

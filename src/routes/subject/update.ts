@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../shared";
 import { validateIdInParams, validateSubjectInBody } from "../../validation";
+import { getSubjectDTO } from "../../formatters";
 
 export const updateOne = async (
   req: Request,
@@ -15,20 +16,16 @@ export const updateOne = async (
       where: { id },
       data: {
         name: subjectToUpdate.name,
-        students: {
-          connect: subjectToUpdate.students.map(({ id }) => ({ id })),
-        },
         curriculums: {
           connect: subjectToUpdate.curriculums.map(({ id }) => ({ id })),
         },
       },
       include: {
-        students: true,
         curriculums: true,
       },
     });
 
-    res.send(updatedSubject);
+    res.send(getSubjectDTO(updatedSubject));
   } catch (error) {
     next(error);
   }

@@ -12,10 +12,6 @@ export const deleteOne = async (
 
     const deletedGrade = await prisma.grade.delete({
       where: { id },
-      include: {
-        student: true,
-        assignment: true,
-      },
     });
 
     res.send(deletedGrade);

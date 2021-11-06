@@ -1,19 +1,26 @@
 import { getOne } from "../get-one";
 import { response, request } from "express";
 import { prisma } from "../../../shared";
-import { getSubject01 } from "../../../sample-data";
+import { getSubject01, getSubjectDTO01 } from "../../../sample-data";
 
 describe("subject-get", () => {
   const req = request;
   const res = response;
+  let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let next: any;
-  let getResponse: jest.SpyInstance;
+  let rawSubject: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let subjectDTO: any;
+  let findUniqueMock: jest.SpyInstance;
+  let resSend: jest.SpyInstance;
 
   beforeEach(() => {
-    req.params = { id: "TestSubject01" };
+    req.params = { id: "1" };
+    rawSubject = getSubject01();
+    subjectDTO = getSubjectDTO01();
     next = jest.fn();
-    getResponse = jest.spyOn(res, "send");
+    resSend = jest.spyOn(res, "send");
+    findUniqueMock = jest.spyOn(prisma.subject, "findUnique");
   });
 
   afterAll(() => {
@@ -21,33 +28,30 @@ describe("subject-get", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with valid subject", async () => {
+  it("responds with valid object", async () => {
     //when
-    const prismaResponse = jest
-      .spyOn(prisma.subject, "findUnique")
-      .mockResolvedValue(getSubject01());
+    findUniqueMock.mockResolvedValue(rawSubject);
     await getOne(req, res, next);
 
     //then
-    expect(prismaResponse).toHaveBeenCalledWith({
-      where: { id: "TestSubject01" },
+    expect(findUniqueMock).toHaveBeenCalledWith({
+      where: { id: "1" },
       include: {
         curriculums: true,
-        students: true,
       },
     });
-    expect(getResponse).toHaveBeenCalledWith(getSubject01());
+    expect(resSend).toHaveBeenCalledWith(subjectDTO);
   });
 
-  it("responds with null when subject id not found", async () => {
+  it("responds with null when id not found", async () => {
     //given
     req.params.id = "2";
 
     //when
-    jest.spyOn(prisma.subject, "findUnique").mockResolvedValue(null);
+    findUniqueMock.mockResolvedValue(null);
     await getOne(req, res, next);
 
     //then
-    expect(getResponse).toHaveBeenCalledWith(null);
+    expect(resSend).toHaveBeenCalledWith(null);
   });
 });

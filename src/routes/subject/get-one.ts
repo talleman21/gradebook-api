@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { NextFunction } from "express-serve-static-core";
 import { prisma } from "../../shared";
 import { validateIdInParams } from "../../validation";
+import { getSubjectDTO } from "../../formatters";
 
 export const getOne = async (
   req: Request,
@@ -14,12 +15,11 @@ export const getOne = async (
     const subject = await prisma.subject.findUnique({
       where: { id },
       include: {
-        students: true,
         curriculums: true,
       },
     });
 
-    res.send(subject);
+    res.send(getSubjectDTO(subject));
   } catch (error) {
     next(error);
   }

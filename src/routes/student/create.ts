@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../shared";
 import { validateStudentInBody } from "../../validation/validate-student-in-body";
+import { getStudentDTO } from "../../formatters";
 
 export const create = async (
   req: Request,
@@ -13,24 +14,18 @@ export const create = async (
     const createStudent = await prisma.student.create({
       data: {
         name: studentToCreate.name,
-        instructors: {
-          connect: studentToCreate.instructorIds.map((instructorId) => ({
-            id: instructorId,
-          })),
-        },
-        subjects: {
-          connect: studentToCreate.subjectIds.map((subjectId) => ({
-            id: subjectId,
+        curriculums: {
+          connect: studentToCreate.curriculumIds.map((curriculumId) => ({
+            id: curriculumId,
           })),
         },
       },
       include: {
-        instructors: true,
-        subjects: true,
+        curriculums: true,
       },
     });
 
-    res.send(createStudent);
+    res.send(getStudentDTO(createStudent));
   } catch (error) {
     next(error);
   }

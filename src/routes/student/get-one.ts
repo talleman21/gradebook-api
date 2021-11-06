@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../shared";
 import { validateIdInParams } from "../../validation";
+import { getStudentDTO } from "../../formatters";
 
 export const getOne = async (
   req: Request,
@@ -13,12 +14,11 @@ export const getOne = async (
     const student = await prisma.student.findUnique({
       where: { id },
       include: {
-        instructors: true,
-        subjects: true,
+        curriculums: true,
       },
     });
 
-    res.send(student);
+    res.send(getStudentDTO(student));
   } catch (error) {
     next(error);
   }

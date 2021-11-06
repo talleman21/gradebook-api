@@ -1,18 +1,25 @@
 import { getMany } from "../get-many";
 import { response, request } from "express";
 import { prisma } from "../../../shared";
-import { getCurriculum01 } from "../../../sample-data";
+import { getCurriculum01, getCurriculumDTO01 } from "../../../sample-data";
 
-describe("curriculum-getMany", () => {
+describe("curriculum-get-many", () => {
   const req = request;
   const res = response;
+  let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let next: any;
-  let getManyResponse: jest.SpyInstance;
+  let rawCurriculum: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let curriculumDTO: any;
+  let findManyMock: jest.SpyInstance;
 
   beforeEach(() => {
+    rawCurriculum = getCurriculum01();
+    curriculumDTO = getCurriculumDTO01();
     next = jest.fn();
-    getManyResponse = jest.spyOn(res, "send");
+    res.send = jest.fn();
+    res.header = jest.fn();
+    findManyMock = jest.spyOn(prisma.curriculum, "findMany");
   });
 
   afterAll(() => {
@@ -20,24 +27,29 @@ describe("curriculum-getMany", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with array of curriculums", async () => {
+  it("responds with valid object array", async () => {
     //when
-    jest
-      .spyOn(prisma.curriculum, "findMany")
-      .mockResolvedValue([getCurriculum01()]);
-
+    findManyMock.mockResolvedValue([rawCurriculum]);
     await getMany(req, res, next);
 
     //then
-    expect(getManyResponse).toHaveBeenCalledWith([getCurriculum01()]);
+    expect(findManyMock).toHaveBeenCalledWith({
+      include: {
+        subject: true,
+        instructor: true,
+        students: true,
+        assignments: true,
+      },
+    });
+    expect(res.send).toHaveBeenCalledWith([curriculumDTO]);
   });
 
-  it("responds with empty array if no curriculums found", async () => {
+  it("responds with empty array if no records found", async () => {
     //when
-    jest.spyOn(prisma.curriculum, "findMany").mockResolvedValue([]);
+    findManyMock.mockResolvedValue([]);
     await getMany(req, res, next);
 
     //then
-    expect(getManyResponse).toHaveBeenCalledWith([]);
+    expect(res.send).toHaveBeenCalledWith([]);
   });
 });

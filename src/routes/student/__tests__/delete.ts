@@ -1,25 +1,26 @@
 import { deleteOne } from "../delete";
 import { response, request } from "express";
 import { prisma } from "../../../shared";
-import { getStudent01 } from "../../../sample-data";
+import { getStudent01, getStudentDTO01 } from "../../../sample-data";
 
 describe("student-delete", () => {
   const req = request;
   const res = response;
+  let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let next: any;
+  let rawStudent: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let errorCode: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let clientVersion: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let meta: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let error: any;
+  let studentDTO: any;
+  let deleteMock: jest.SpyInstance;
+  let resSend: jest.SpyInstance;
 
   beforeEach(() => {
     req.params = { id: "1" };
+    rawStudent = getStudent01();
+    studentDTO = getStudentDTO01();
     next = jest.fn();
+    resSend = jest.spyOn(res, "send");
+    deleteMock = jest.spyOn(prisma.student, "delete");
   });
 
   afterAll(() => {
@@ -27,34 +28,30 @@ describe("student-delete", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with deleted student", async () => {
+  it("responds with valid record", async () => {
     //when
-    const prismaResponse = jest
-      .spyOn(prisma.student, "delete")
-      .mockResolvedValue(getStudent01());
-    const deleteResponse = jest.spyOn(res, "send");
+    deleteMock.mockResolvedValue(rawStudent);
     await deleteOne(req, res, next);
 
     //then
-    expect(prismaResponse).toHaveBeenCalledWith({
+    expect(deleteMock).toHaveBeenCalledWith({
       where: { id: "1" },
+      include: {
+        curriculums: true,
+      },
     });
-    expect(deleteResponse).toHaveBeenCalledWith(getStudent01());
+    expect(resSend).toHaveBeenCalledWith(studentDTO);
   });
 
-  it("rejects with prisma known error when student id not found", async () => {
+  it("throws error when record not found", async () => {
     //given
     req.params.id = "2";
-    errorCode = "P2025";
-    clientVersion = "3.2.1";
-    meta = { cause: "Record to delete not found." };
-    error = { errorCode, clientVersion, meta };
 
     //when
-    jest.spyOn(prisma.student, "delete").mockRejectedValue(error);
+    deleteMock.mockRejectedValue("error");
     await deleteOne(req, res, next);
 
     //then
-    expect(next).toHaveBeenCalledWith(error);
+    expect(next).toHaveBeenCalledWith("error");
   });
 });

@@ -18,10 +18,6 @@ export const updateOne = async (
         student: { connect: { id: gradeToUpdate.studentId } },
         assignment: { connect: { id: gradeToUpdate.assignmentId } },
       },
-      include: {
-        student: true,
-        assignment: true,
-      },
     });
 
     res.send(updatedGrade);

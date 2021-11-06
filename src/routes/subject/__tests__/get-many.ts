@@ -1,22 +1,25 @@
 import { getMany } from "../get-many";
 import { response, request } from "express";
 import { prisma } from "../../../shared";
-import { getSubject01 } from "../../../sample-data";
+import { getSubject01, getSubjectDTO01 } from "../../../sample-data";
 
-describe("subject-getMany", () => {
+describe("subject-get-many", () => {
   const req = request;
   const res = response;
+  let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let next: any;
+  let rawSubject: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let returnedSubject: any;
-  let getManyResponse: jest.SpyInstance;
-  let prismaResponse: jest.SpyInstance;
+  let subjectDTO: any;
+  let findManyMock: jest.SpyInstance;
 
   beforeEach(() => {
+    rawSubject = getSubject01();
+    subjectDTO = getSubjectDTO01();
     next = jest.fn();
-    getManyResponse = jest.spyOn(res, "send");
-    returnedSubject = getSubject01();
+    res.send = jest.fn();
+    res.header = jest.fn();
+    findManyMock = jest.spyOn(prisma.subject, "findMany");
   });
 
   afterAll(() => {
@@ -24,31 +27,26 @@ describe("subject-getMany", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with array of subjects", async () => {
+  it("responds with valid object array", async () => {
     //when
-    prismaResponse = jest
-      .spyOn(prisma.subject, "findMany")
-      .mockResolvedValue([returnedSubject]);
-
+    findManyMock.mockResolvedValue([rawSubject]);
     await getMany(req, res, next);
 
     //then
-    expect(prismaResponse).toHaveBeenCalledWith({
+    expect(findManyMock).toHaveBeenCalledWith({
       include: {
-        students: true,
         curriculums: true,
       },
     });
-
-    expect(getManyResponse).toHaveBeenCalledWith([returnedSubject]);
+    expect(res.send).toHaveBeenCalledWith([subjectDTO]);
   });
 
-  it("responds with empty array if no subjects found", async () => {
+  it("responds with empty array if no records found", async () => {
     //when
-    jest.spyOn(prisma.subject, "findMany").mockResolvedValue([]);
+    findManyMock.mockResolvedValue([]);
     await getMany(req, res, next);
 
     //then
-    expect(getManyResponse).toHaveBeenCalledWith([]);
+    expect(res.send).toHaveBeenCalledWith([]);
   });
 });

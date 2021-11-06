@@ -13,10 +13,6 @@ export const getOne = async (
 
     const grade = await prisma.grade.findUnique({
       where: { id },
-      include: {
-        student: true,
-        assignment: true,
-      },
     });
 
     res.send(grade);

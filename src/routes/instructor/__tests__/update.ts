@@ -1,31 +1,31 @@
 import { updateOne } from "../update";
 import { response, request } from "express";
 import { prisma } from "../../../shared";
-import { getInstructor01 } from "../../../sample-data";
-import createHttpError from "http-errors";
+import {
+  getInstructor01,
+  getInstructorBodyObject01,
+  getInstructorDTO01,
+} from "../../../sample-data";
 
 describe("instructor-update", () => {
   const req = request;
   const res = response;
+  let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let next: any;
+  let rawInstructor: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let errorCode: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let clientVersion: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let meta: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let error: any;
+  let instructorDTO: any;
+  let updateMock: jest.SpyInstance;
+  let resSend: jest.SpyInstance;
 
   beforeEach(() => {
-    req.body = {
-      name: "TestInstructor01",
-      studentIds: ["TestStudent01"],
-    };
     req.params = { id: "1" };
-    delete req.body.id;
+    req.body = getInstructorBodyObject01();
+    rawInstructor = getInstructor01();
+    instructorDTO = getInstructorDTO01();
     next = jest.fn();
+    resSend = jest.spyOn(res, "send");
+    updateMock = jest.spyOn(prisma.instructor, "update");
   });
 
   afterAll(() => {
@@ -33,81 +33,31 @@ describe("instructor-update", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with updated instructor", async () => {
+  it("responds with valid object", async () => {
     //when
-    const prismaResponse = jest
-      .spyOn(prisma.instructor, "update")
-      .mockResolvedValue(getInstructor01());
-    const updateResponse = jest.spyOn(res, "send");
+    updateMock.mockResolvedValue(rawInstructor);
     await updateOne(req, res, next);
 
     //then
-    expect(prismaResponse).toHaveBeenCalledWith({
+    expect(updateMock).toHaveBeenCalledWith({
       where: { id: "1" },
       data: {
         name: req.body.name,
-        students: { connect: [{ id: "TestStudent01" }] },
       },
-      include: { students: true },
+      include: {
+        curriculums: true,
+      },
     });
-    expect(updateResponse).toHaveBeenCalledWith(getInstructor01());
+
+    expect(resSend).toHaveBeenCalledWith(instructorDTO);
   });
 
-  it("rejects with a bad request error when missing required field", async () => {
-    //given
-    delete req.body.name;
-
+  it("calls next function when error encountered", async () => {
     //when
+    jest.spyOn(prisma.instructor, "update").mockRejectedValue("error");
     await updateOne(req, res, next);
 
     //then
-    expect(next).toHaveBeenCalledWith(
-      createHttpError(400, '"name" is required')
-    );
-  });
-
-  it("rejects with a bad request error when unknown field provided", async () => {
-    //given
-    req.body.unknownField = "unknown field";
-
-    //when
-    await updateOne(req, res, next);
-
-    //then
-    expect(next).toHaveBeenCalledWith(
-      createHttpError(400, '"unknownField" is not allowed')
-    );
-  });
-
-  it("rejects with prisma known error when instructor id not found", async () => {
-    //given
-    req.params.id = "2";
-    errorCode = "P2025";
-    clientVersion = "3.2.1";
-    meta = { cause: "Record to update not found." };
-    error = { errorCode, clientVersion, meta };
-
-    //when
-    jest.spyOn(prisma.instructor, "update").mockRejectedValue(error);
-    await updateOne(req, res, next);
-
-    //then
-    expect(next).toHaveBeenCalledWith(error);
-  });
-
-  it("rejects with prisma known error when studentId not found", async () => {
-    //given
-    req.body.studentIds = ["invalid subject id"];
-    errorCode = "P2003";
-    clientVersion = "3.2.1";
-    meta = { field_name: "Instructor_studentId_fkey (index)" };
-    error = { errorCode, clientVersion, meta };
-
-    //when
-    jest.spyOn(prisma.instructor, "update").mockRejectedValue(error);
-    await updateOne(req, res, next);
-
-    //then
-    expect(next).toHaveBeenCalledWith(error);
+    expect(next).toHaveBeenCalledWith("error");
   });
 });

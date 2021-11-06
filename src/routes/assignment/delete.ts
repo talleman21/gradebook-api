@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { getAssignmentDTO } from "../../formatters";
 import { prisma } from "../../shared";
 import { validateIdInParams } from "../../validation";
 
@@ -12,11 +13,13 @@ export const deleteOne = async (
 
     const deletedAssignment = await prisma.assignment.delete({
       where: { id },
+      include: {
+        grades: true,
+      },
     });
 
-    res.send(deletedAssignment);
+    res.send(getAssignmentDTO(deletedAssignment));
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

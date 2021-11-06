@@ -20,10 +20,6 @@ export const create = async (
           connect: { id: gradeToCreate.assignmentId },
         },
       },
-      include: {
-        student: true,
-        assignment: true,
-      },
     });
 
     res.send(createGrade);

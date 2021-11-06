@@ -1,30 +1,30 @@
 import { create } from "../create";
 import { response, request } from "express";
 import { prisma } from "../../../shared";
-import { getSubject01 } from "../../../sample-data";
-import createHttpError from "http-errors";
+import {
+  getSubject01,
+  getSubjectBodyObject01,
+  getSubjectDTO01,
+} from "../../../sample-data";
 
 describe("subject-create", () => {
   const req = request;
   const res = response;
+  let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let next: any;
+  let rawSubject: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let errorCode: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let clientVersion: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let meta: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let error: any;
+  let subjectDTO: any;
+  let createMock: jest.SpyInstance;
+  let resSend: jest.SpyInstance;
 
   beforeEach(() => {
-    req.body = {
-      name: "TestSubject01",
-      students: [{ id: "TestStudent01", name: "TestStudent01" }],
-      curriculums: [{ id: "TestCurriculum01", name: "TestCurriculum01" }],
-    };
+    req.body = getSubjectBodyObject01();
+    rawSubject = getSubject01();
+    subjectDTO = getSubjectDTO01();
     next = jest.fn();
+    resSend = jest.spyOn(res, "send");
+    createMock = jest.spyOn(prisma.subject, "create");
   });
 
   afterAll(() => {
@@ -32,71 +32,35 @@ describe("subject-create", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with created subject", async () => {
+  it("responds with valid record", async () => {
     //when
-    jest.spyOn(prisma.subject, "create").mockResolvedValue(getSubject01());
-    const myResponse = jest.spyOn(res, "send");
+    createMock.mockResolvedValue(rawSubject);
     await create(req, res, next);
 
     //then
-    expect(myResponse).toHaveBeenCalledWith(getSubject01());
+    expect(createMock).toHaveBeenCalledWith({
+      data: {
+        name: req.body.name,
+        curriculums: {
+          connect: req.body.curriculums.map(({ id }: { id: string }) => ({
+            id,
+          })),
+        },
+      },
+      include: {
+        curriculums: true,
+      },
+    });
+
+    expect(resSend).toHaveBeenCalledWith(subjectDTO);
   });
 
-  it("rejects with a bad request error when missing required field", async () => {
-    //given
-    delete req.body.name;
-
+  it("calls next function when error encountered", async () => {
     //when
+    jest.spyOn(prisma.subject, "create").mockRejectedValue("error");
     await create(req, res, next);
 
     //then
-    expect(next).toHaveBeenCalledWith(
-      createHttpError(400, '"name" is required')
-    );
-  });
-
-  it("rejects with a bad request error when unknown field provided", async () => {
-    //given
-    req.body.unknownField = "unknown field";
-
-    //when
-    await create(req, res, next);
-
-    //then
-    expect(next).toHaveBeenCalledWith(
-      createHttpError(400, '"unknownField" is not allowed')
-    );
-  });
-
-  it("rejects with prisma known error when student fkey not found", async () => {
-    //given
-    req.body.students[0].id = "invalid student id";
-    errorCode = "P2003";
-    clientVersion = "3.2.1";
-    meta = { field_name: "Subject_studentId_fkey (index)" };
-    error = { errorCode, clientVersion, meta };
-
-    //when
-    jest.spyOn(prisma.subject, "create").mockRejectedValue(error);
-    await create(req, res, next);
-
-    //then
-    expect(next).toHaveBeenCalledWith(error);
-  });
-
-  it("rejects with prisma known error when curriculum fkey not found", async () => {
-    //given
-    req.body.curriculums[0].id = "invalid curriculum id";
-    errorCode = "P2003";
-    clientVersion = "3.2.1";
-    meta = { field_name: "Subject_curriculumId_fkey (index)" };
-    error = { errorCode, clientVersion, meta };
-
-    //when
-    jest.spyOn(prisma.subject, "create").mockRejectedValue(error);
-    await create(req, res, next);
-
-    //then
-    expect(next).toHaveBeenCalledWith(error);
+    expect(next).toHaveBeenCalledWith("error");
   });
 });

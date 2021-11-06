@@ -1,32 +1,31 @@
 import { updateOne } from "../update";
 import { response, request } from "express";
 import { prisma } from "../../../shared";
-import { getStudent01 } from "../../../sample-data";
-import createHttpError from "http-errors";
+import {
+  getStudent01,
+  getStudentBodyObject01,
+  getStudentDTO01,
+} from "../../../sample-data";
 
 describe("student-update", () => {
   const req = request;
   const res = response;
+  let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let next: any;
+  let rawStudent: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let errorCode: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let clientVersion: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let meta: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let error: any;
+  let studentDTO: any;
+  let updateMock: jest.SpyInstance;
+  let resSend: jest.SpyInstance;
 
   beforeEach(() => {
-    req.body = {
-      name: "TestStudent01",
-      subjectIds: ["TestSubject01"],
-      instructorIds: ["TestInstructor01"],
-    };
     req.params = { id: "1" };
-    delete req.body.id;
+    req.body = getStudentBodyObject01();
+    rawStudent = getStudent01();
+    studentDTO = getStudentDTO01();
     next = jest.fn();
+    resSend = jest.spyOn(res, "send");
+    updateMock = jest.spyOn(prisma.student, "update");
   });
 
   afterAll(() => {
@@ -34,98 +33,36 @@ describe("student-update", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with updated student", async () => {
+  it("responds with valid object", async () => {
     //when
-    const prismaResponse = jest
-      .spyOn(prisma.student, "update")
-      .mockResolvedValue(getStudent01());
-    const updateResponse = jest.spyOn(res, "send");
+    updateMock.mockResolvedValue(rawStudent);
     await updateOne(req, res, next);
 
     //then
-    expect(prismaResponse).toHaveBeenCalledWith({
+    expect(updateMock).toHaveBeenCalledWith({
       where: { id: "1" },
       data: {
         name: req.body.name,
-        subjects: { connect: [{ id: "TestSubject01" }] },
-        instructors: { connect: [{ id: "TestInstructor01" }] },
+        curriculums: {
+          connect: req.body.curriculumIds.map((curriculumId: string) => ({
+            id: curriculumId,
+          })),
+        },
       },
-      include: { subjects: true, instructors: true },
+      include: {
+        curriculums: true,
+      },
     });
-    expect(updateResponse).toHaveBeenCalledWith(getStudent01());
+
+    expect(resSend).toHaveBeenCalledWith(studentDTO);
   });
 
-  it("rejects with a bad request error when missing required field", async () => {
-    //given
-    delete req.body.name;
-
+  it("calls next function when error encountered", async () => {
     //when
+    jest.spyOn(prisma.student, "update").mockRejectedValue("error");
     await updateOne(req, res, next);
 
     //then
-    expect(next).toHaveBeenCalledWith(
-      createHttpError(400, '"name" is required')
-    );
-  });
-
-  it("rejects with a bad request error when unknown field provided", async () => {
-    //given
-    req.body.unknownField = "unknown field";
-
-    //when
-    await updateOne(req, res, next);
-
-    //then
-    expect(next).toHaveBeenCalledWith(
-      createHttpError(400, '"unknownField" is not allowed')
-    );
-  });
-
-  it("rejects with prisma known error when student id not found", async () => {
-    //given
-    req.params.id = "2";
-    errorCode = "P2025";
-    clientVersion = "3.2.1";
-    meta = { cause: "Record to update not found." };
-    error = { errorCode, clientVersion, meta };
-
-    //when
-    jest.spyOn(prisma.student, "update").mockRejectedValue(error);
-    await updateOne(req, res, next);
-
-    //then
-    expect(next).toHaveBeenCalledWith(error);
-  });
-
-  it("rejects with prisma known error when studentId not found", async () => {
-    //given
-    req.body.subjectIds = ["invalid subject id"];
-    errorCode = "P2003";
-    clientVersion = "3.2.1";
-    meta = { field_name: "Student_subjectId_fkey (index)" };
-    error = { errorCode, clientVersion, meta };
-
-    //when
-    jest.spyOn(prisma.student, "update").mockRejectedValue(error);
-    await updateOne(req, res, next);
-
-    //then
-    expect(next).toHaveBeenCalledWith(error);
-  });
-
-  it("rejects with prisma known error when instructorId not found", async () => {
-    //given
-    req.body.instructorIds = ["invalid instructor id"];
-    errorCode = "P2003";
-    clientVersion = "3.2.1";
-    meta = { field_name: "Student_instructorId_fkey (index)" };
-    error = { errorCode, clientVersion, meta };
-
-    //when
-    jest.spyOn(prisma.student, "update").mockRejectedValue(error);
-    await updateOne(req, res, next);
-
-    //then
-    expect(next).toHaveBeenCalledWith(error);
+    expect(next).toHaveBeenCalledWith("error");
   });
 });

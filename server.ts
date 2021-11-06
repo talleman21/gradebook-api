@@ -18,15 +18,13 @@ import {
 app.use(express.json());
 app.use(
   cors({
-    allowedHeaders: ["X-Total-Count", "range", "content-type"],
-    exposedHeaders: ["Content-Range"],
+    allowedHeaders: ["Content-Type"],
+    exposedHeaders: ["Content-Range", "X-Total-Count"],
   })
 );
 
-app.use((req, res, next) => {
-  console.log(req.body);
-  res.header("X-Total-Count", "10");
-  res.header("Content-Range", "0-10/10");
+app.use("/", (req, res, next) => {
+  console.log("req", req.body);
   next();
 });
 

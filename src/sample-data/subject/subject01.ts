@@ -1,20 +1,22 @@
-import { Curriculum, Student, Subject } from "@prisma/client";
+import { Curriculum, Student } from "@prisma/client";
+import { RawStudent, StudentDTO } from "../../types";
 import { getCurriculum01 } from "../curriculum";
-import { getStudent01 } from "../student";
 
-const student = {
-  ...getStudent01(),
-  subjects: undefined,
-  instructors: undefined,
-};
-const curriculum = { ...getCurriculum01() };
-
-export const getSubject01 = (): Subject & {
-  students: Student[];
+export const getSubjectBodyObject01 = (): Omit<Student, "id"> & {
   curriculums: Curriculum[];
 } => ({
+  name: "TestSubject01",
+  curriculums: [getCurriculum01()],
+});
+
+export const getSubject01 = (): RawStudent => ({
   id: "TestSubject01",
   name: "TestSubject01",
-  students: [student],
-  curriculums: [curriculum],
+  curriculums: [getCurriculum01()],
+});
+
+export const getSubjectDTO01 = (): StudentDTO => ({
+  id: "TestSubject01",
+  name: "TestSubject01",
+  curriculumIds: ["TestCurriculum01"],
 });

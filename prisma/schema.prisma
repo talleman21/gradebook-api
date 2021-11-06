@@ -8,54 +8,55 @@ datasource db {
 }
 
 model Instructor {
-  id String @id @default(cuid())
-  name String
-  students Student[]
+  id       String    @id @default(cuid())
+  name     String
+  curriculums Curriculum[]
 }
 
 model Student {
-  id        String    @id @default(cuid())
-  name      String
-  subjects  Subject[]
-  instructors Instructor[]
-  grades Grade[]
+  id          String       @id @default(cuid())
+  name        String
+  curriculums Curriculum[]
+  grades      Grade[]
 }
 
 model Subject {
-  id         String @id @default(cuid())
-  name       String
-  students    Student[]
-  curriculums  Curriculum[]
+  id   String @id @default(cuid())
+  name String
+  curriculums Curriculum[]
+
+  @@map("subjects")
 }
 
 model Curriculum {
-  id         String @id @default(cuid())
-  name       String
-  subject    Subject @relation(fields: [subjectId],references: [id],onDelete:Cascade)
-  subjectId  String
+  id          String       @id @default(cuid())
+  name        String
+  subject     Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subjectId   String
+  instructor     Instructor      @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  instructorId   String
+  students    Student[]
   assignments Assignment[]
 }
 
 model Assignment {
-  id           String    @id @default(cuid())
+  id           String     @id @default(cuid())
   name         String
-  grades       Grade[]   
+  grades       Grade[]
   description  String
   dueDate      DateTime
-  curriculum   Curriculum @relation(fields: [curriculumId],references: [id], onDelete:Cascade)
-  curriculumId  String
+  curriculum   Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
+  curriculumId String
 
 }
 
 model Grade {
-  id String @id @default(cuid())
-  student Student @relation(fields: [studentId], references:[id], onDelete:Cascade)
-  assignment Assignment @relation(fields: [assignmentId], references:[id], onDelete:Cascade)
-  studentId String
+  id           String     @id @default(cuid())
+  student      Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  studentId    String
   assignmentId String
-  grade Int
+  grade        Int
 
-  @@unique([studentId,assignmentId],map:"grade_student_assignment_UK")
+  @@unique([studentId, assignmentId], map: "grade_student_assignment_UK")
 }
-
-

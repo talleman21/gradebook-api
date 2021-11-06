@@ -5,13 +5,13 @@ import createError from "http-errors";
 const studentInBodySchema = joi.object({
   name: joi.string().required(),
   instructorIds: joi.array().items(joi.string()).default([]),
-  subjectIds: joi.array().items(joi.string()).default([]),
+  curriculumIds: joi.array().items(joi.string()).default([]),
 });
 
 export const validateStudentInBody = async (
   body: unknown
 ): Promise<
-  Omit<Student, "id"> & { instructorIds: string[]; subjectIds: string[] }
+  Omit<Student, "id"> & { instructorIds: string[]; curriculumIds: string[] }
 > => {
   try {
     const result = await studentInBodySchema.validateAsync(body);

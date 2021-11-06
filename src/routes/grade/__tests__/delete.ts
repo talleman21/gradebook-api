@@ -6,20 +6,18 @@ import { getGrade01 } from "../../../sample-data";
 describe("grade-delete", () => {
   const req = request;
   const res = response;
+  let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let next: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let errorCode: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let clientVersion: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let meta: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let error: any;
+  let rawGrade: any;
+  let deleteMock: jest.SpyInstance;
+  let resSend: jest.SpyInstance;
 
   beforeEach(() => {
-    req.params = { id: "TestGrade01" };
+    req.params = { id: "1" };
+    rawGrade = getGrade01();
     next = jest.fn();
+    resSend = jest.spyOn(res, "send");
+    deleteMock = jest.spyOn(prisma.grade, "delete");
   });
 
   afterAll(() => {
@@ -27,38 +25,27 @@ describe("grade-delete", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with deleted grade", async () => {
+  it("responds with valid record", async () => {
     //when
-    const prismaResponse = jest
-      .spyOn(prisma.grade, "delete")
-      .mockResolvedValue(getGrade01());
-    const deleteResponse = jest.spyOn(res, "send");
+    deleteMock.mockResolvedValue(rawGrade);
     await deleteOne(req, res, next);
 
     //then
-    expect(prismaResponse).toHaveBeenCalledWith({
-      where: { id: "TestGrade01" },
-      include: {
-        assignment: true,
-        student: true,
-      },
+    expect(deleteMock).toHaveBeenCalledWith({
+      where: { id: "1" },
     });
-    expect(deleteResponse).toHaveBeenCalledWith(getGrade01());
+    expect(resSend).toHaveBeenCalledWith(rawGrade);
   });
 
-  it("rejects with prisma known error when grade id not found", async () => {
+  it("throws error when record not found", async () => {
     //given
     req.params.id = "2";
-    errorCode = "P2025";
-    clientVersion = "3.2.1";
-    meta = { cause: "Record to delete not found." };
-    error = { errorCode, clientVersion, meta };
 
     //when
-    jest.spyOn(prisma.grade, "delete").mockRejectedValue(error);
+    deleteMock.mockRejectedValue("error");
     await deleteOne(req, res, next);
 
     //then
-    expect(next).toHaveBeenCalledWith(error);
+    expect(next).toHaveBeenCalledWith("error");
   });
 });
