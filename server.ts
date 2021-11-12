@@ -25,15 +25,16 @@ app.use(
 
 app.use("/", (req, res, next) => {
   console.log("req", req.body);
+  console.log("query", req.query);
   next();
 });
 
-app.use("/instructor", instructor);
-app.use("/student", student);
-app.use("/subject", subject);
-app.use("/curriculum", curriculum);
-app.use("/assignment", assignment);
-app.use("/grade", grade);
+app.use("/instructors", instructor);
+app.use("/students", student);
+app.use("/subjects", subject);
+app.use("/curriculums", curriculum);
+app.use("/assignments", assignment);
+app.use("/grades", grade);
 
 // error handler
 app.use(function (

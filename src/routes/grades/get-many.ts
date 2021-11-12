@@ -7,7 +7,9 @@ export const getMany = async (
   next: NextFunction
 ) => {
   try {
-    const getGrades = await prisma.grade.findMany({});
+    const getGrades = await prisma.grade.findMany({
+      where: { assignmentId: req.query.assignmentId as string },
+    });
 
     res.header("x-total-count", "10");
     res.header("content-range", "1-10/10");

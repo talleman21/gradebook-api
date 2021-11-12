@@ -13,6 +13,8 @@ describe("grade-get-many", () => {
 
   beforeEach(() => {
     rawGrade = getGrade01();
+    req.query = {};
+    req.query.assignmentId = "TestAssignment01";
     next = jest.fn();
     res.send = jest.fn();
     res.header = jest.fn();
@@ -30,7 +32,9 @@ describe("grade-get-many", () => {
     await getMany(req, res, next);
 
     //then
-    expect(findManyMock).toHaveBeenCalledWith({});
+    expect(findManyMock).toHaveBeenCalledWith({
+      where: { assignmentId: "TestAssignment01" },
+    });
     expect(res.send).toHaveBeenCalledWith([rawGrade]);
   });
 
