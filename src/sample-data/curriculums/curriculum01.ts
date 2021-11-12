@@ -1,6 +1,6 @@
 import { Curriculum } from "@prisma/client";
 import { RawCurriculum, CurriculumDTO } from "../../types";
-import { getAssignment01 } from "../assignment";
+import { getAssignment01 } from "../assignments";
 
 export const getCurriculumBodyObject01 = (): Omit<Curriculum, "id"> & {
   studentIds: string[];

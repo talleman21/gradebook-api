@@ -1,6 +1,6 @@
 import { Instructor } from "@prisma/client";
 import { RawInstructor, InstructorDTO } from "../../types";
-import { getCurriculum01 } from "../curriculum";
+import { getCurriculum01 } from "../curriculums";
 
 export const getInstructorBodyObject01 = (): Omit<Instructor, "id"> => ({
   name: "TestInstructor01",
