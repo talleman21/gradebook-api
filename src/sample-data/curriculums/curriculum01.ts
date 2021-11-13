@@ -4,11 +4,13 @@ import { getAssignment01 } from "../assignments";
 
 export const getCurriculumBodyObject01 = (): Omit<Curriculum, "id"> & {
   studentIds: string[];
+  assignmentIds: string[];
 } => ({
   name: "TestAssignment01",
   subjectId: "TestSubject01",
   instructorId: "TestInstructor01",
   studentIds: ["TestStudent01"],
+  assignmentIds: ["TestAssignment01"],
 });
 
 export const getCurriculum01 = (): RawCurriculum => ({
