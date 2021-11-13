@@ -8,13 +8,17 @@ export const getMany = async (
   next: NextFunction
 ) => {
   try {
-    const getSubjects = await prisma.subject.findMany({
-      include: {
-        curriculums: true,
-      },
-    });
-    res.header("X-Total-Count", "1");
-    res.send(getSubjects.map((subject) => getSubjectDTO(subject)));
+    const [count, subjects] = await prisma.$transaction([
+      prisma.subject.count(),
+      prisma.subject.findMany({
+        include: {
+          curriculums: true,
+        },
+      }),
+    ]);
+
+    res.header("X-Total-Count", count.toString());
+    res.send(subjects.map((subject) => getSubjectDTO(subject)));
   } catch (error) {
     next(error);
   }
