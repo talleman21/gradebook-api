@@ -31,12 +31,17 @@ describe("grade-get-many", () => {
   });
 
   it("responds with valid object array", async () => {
+    //given
+    req.query._start = "0";
+    req.query._end = "5";
     //when
     transactionMock.mockResolvedValue([1, [rawGrade]]);
     await getMany(req, res, next);
 
     //then
     expect(findManyMock).toHaveBeenCalledWith({
+      skip: 0,
+      take: 5,
       where: { assignmentId: "TestAssignment01" },
     });
     expect(countMock).toHaveBeenCalledWith(),
