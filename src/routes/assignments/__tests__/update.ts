@@ -41,7 +41,11 @@ describe("assignment-update", () => {
     //then
     expect(updateMock).toHaveBeenCalledWith({
       where: { id: "1" },
-      data: req.body,
+      data: {
+        name: req.body.name,
+        description: req.body.description,
+        dueDate: req.body.dueDate,
+      },
       include: {
         grades: true,
       },
