@@ -4,7 +4,6 @@ import createError from "http-errors";
 
 const studentInBodySchema = joi.object({
   name: joi.string().required(),
-  instructorIds: joi.array().items(joi.string()).default([]),
   curriculumIds: joi.array().items(joi.string()).default([]),
 });
 
