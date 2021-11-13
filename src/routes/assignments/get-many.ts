@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../shared";
 import { getAssignmentDTO } from "../../formatters";
+import { validatePaginationInQuery } from "../../validation";
 
 export const getMany = async (
   req: Request,
@@ -8,9 +9,12 @@ export const getMany = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    const { skip, take } = await validatePaginationInQuery(req.query);
     const [count, assignments] = await prisma.$transaction([
       prisma.assignment.count(),
       prisma.assignment.findMany({
+        skip,
+        take,
         include: {
           grades: true,
         },

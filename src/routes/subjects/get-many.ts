@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../shared";
 import { getSubjectDTO } from "../../formatters";
+import { validatePaginationInQuery } from "../../validation";
 
 export const getMany = async (
   req: Request,
@@ -8,9 +9,12 @@ export const getMany = async (
   next: NextFunction
 ) => {
   try {
+    const { skip, take } = await validatePaginationInQuery(req.query);
     const [count, subjects] = await prisma.$transaction([
       prisma.subject.count(),
       prisma.subject.findMany({
+        skip,
+        take,
         include: {
           curriculums: true,
         },

@@ -18,6 +18,7 @@ describe("curriculum-get-many", () => {
   beforeEach(() => {
     rawCurriculum = getCurriculum01();
     curriculumDTO = getCurriculumDTO01();
+    req.query = {};
     next = jest.fn();
     res.send = jest.fn();
     res.header = jest.fn();
@@ -32,12 +33,17 @@ describe("curriculum-get-many", () => {
   });
 
   it("responds with valid object array", async () => {
+    //given
+    req.query._start = "0";
+    req.query._end = "5";
     //when
     transactionMock.mockResolvedValue([1, [rawCurriculum]]);
     await getMany(req, res, next);
 
     //then
     expect(findManyMock).toHaveBeenCalledWith({
+      skip: 0,
+      take: 5,
       include: {
         subject: true,
         instructor: true,
