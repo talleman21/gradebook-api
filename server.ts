@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(
   cors({
     allowedHeaders: ["Content-Type"],
-    exposedHeaders: ["Content-Range", "X-Total-Count"],
+    exposedHeaders: ["X-Total-Count"],
   })
 );
 

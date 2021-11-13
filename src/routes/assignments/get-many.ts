@@ -8,14 +8,16 @@ export const getMany = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const assignments = await prisma.assignment.findMany({
-      include: {
-        grades: true,
-      },
-    });
+    const [count, assignments] = await prisma.$transaction([
+      prisma.assignment.count(),
+      prisma.assignment.findMany({
+        include: {
+          grades: true,
+        },
+      }),
+    ]);
 
-    res.header("x-total-count", "10");
-    res.header("content-range", "1-10/10");
+    res.header("X-Total-Count", count.toString());
     res.send(assignments.map((assignment) => getAssignmentDTO(assignment)));
   } catch (error) {
     next(error);

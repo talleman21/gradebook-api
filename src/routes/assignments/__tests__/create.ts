@@ -47,7 +47,10 @@ describe("assignment-create", () => {
     });
     expect(createMock).toHaveBeenCalledWith({
       data: {
-        ...req.body,
+        name: req.body.name,
+        description: req.body.description,
+        dueDate: req.body.dueDate,
+        curriculumId: req.body.curriculumId,
         grades: undefined,
       },
       include: {
@@ -71,7 +74,10 @@ describe("assignment-create", () => {
     });
     expect(createMock).toHaveBeenCalledWith({
       data: {
-        ...req.body,
+        name: req.body.name,
+        description: req.body.description,
+        dueDate: req.body.dueDate,
+        curriculumId: req.body.curriculumId,
         grades: {
           createMany: {
             data: [

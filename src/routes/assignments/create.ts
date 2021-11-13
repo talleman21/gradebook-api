@@ -22,7 +22,10 @@ export const create = async (
 
     const createdAssignment = await prisma.assignment.create({
       data: {
-        ...assignmentBody,
+        name: assignmentBody.name,
+        description: assignmentBody.description,
+        dueDate: assignmentBody.dueDate,
+        curriculumId: assignmentBody.curriculumId,
         grades: students
           ? {
               createMany: {

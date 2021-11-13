@@ -8,15 +8,17 @@ export const getMany = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const getManyStudents = await prisma.student.findMany({
-      include: {
-        curriculums: true,
-      },
-    });
+    const [count, students] = await prisma.$transaction([
+      prisma.student.count(),
+      prisma.student.findMany({
+        include: {
+          curriculums: true,
+        },
+      }),
+    ]);
 
-    res.header("x-total-count", "10");
-    res.header("content-range", "1-10/10");
-    res.send(getManyStudents.map((student) => getStudentDTO(student)));
+    res.header("X-Total-Count", count.toString());
+    res.send(students.map((student) => getStudentDTO(student)));
   } catch (error) {
     next(error);
   }

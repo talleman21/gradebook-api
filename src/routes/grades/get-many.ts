@@ -7,13 +7,15 @@ export const getMany = async (
   next: NextFunction
 ) => {
   try {
-    const getGrades = await prisma.grade.findMany({
-      where: { assignmentId: req.query.assignmentId as string },
-    });
+    const [count, grades] = await prisma.$transaction([
+      prisma.grade.count(),
+      prisma.grade.findMany({
+        where: { assignmentId: req.query.assignmentId as string },
+      }),
+    ]);
 
-    res.header("x-total-count", "10");
-    res.header("content-range", "1-10/10");
-    res.send(getGrades);
+    res.header("X-Total-Count", count.toString());
+    res.send(grades);
   } catch (error) {
     next(error);
   }

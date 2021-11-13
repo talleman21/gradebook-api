@@ -9,7 +9,9 @@ describe("grade-get-many", () => {
   let next: jest.Mock;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let rawGrade: any;
+  let transactionMock: jest.SpyInstance;
   let findManyMock: jest.SpyInstance;
+  let countMock: jest.SpyInstance;
 
   beforeEach(() => {
     rawGrade = getGrade01();
@@ -18,7 +20,9 @@ describe("grade-get-many", () => {
     next = jest.fn();
     res.send = jest.fn();
     res.header = jest.fn();
+    transactionMock = jest.spyOn(prisma, "$transaction");
     findManyMock = jest.spyOn(prisma.grade, "findMany");
+    countMock = jest.spyOn(prisma.grade, "count");
   });
 
   afterAll(() => {
@@ -28,19 +32,21 @@ describe("grade-get-many", () => {
 
   it("responds with valid object array", async () => {
     //when
-    findManyMock.mockResolvedValue([rawGrade]);
+    transactionMock.mockResolvedValue([1, [rawGrade]]);
     await getMany(req, res, next);
 
     //then
     expect(findManyMock).toHaveBeenCalledWith({
       where: { assignmentId: "TestAssignment01" },
     });
+    expect(countMock).toHaveBeenCalledWith(),
+      expect(res.header).toHaveBeenCalledWith("X-Total-Count", "1");
     expect(res.send).toHaveBeenCalledWith([rawGrade]);
   });
 
   it("responds with empty array if no records found", async () => {
     //when
-    findManyMock.mockResolvedValue([]);
+    transactionMock.mockResolvedValue([0, []]);
     await getMany(req, res, next);
 
     //then
@@ -49,7 +55,7 @@ describe("grade-get-many", () => {
 
   it("calls next() if error thrown", async () => {
     //when
-    findManyMock.mockRejectedValue("error");
+    transactionMock.mockRejectedValue("error");
     await getMany(req, res, next);
 
     //then
