@@ -34,7 +34,31 @@ describe("assignment-create", () => {
     jest.clearAllMocks();
   });
 
-  it("responds with valid record", async () => {
+  it("responds with valid record and does not create associated grades", async () => {
+    //when
+    getStudentsMock.mockResolvedValue(null);
+    createMock.mockResolvedValue(rawAssignment);
+    await create(req, res, next);
+
+    //then
+    expect(getStudentsMock).toHaveBeenCalledWith({
+      where: { id: req.body.curriculumId },
+      select: { students: true },
+    });
+    expect(createMock).toHaveBeenCalledWith({
+      data: {
+        ...req.body,
+        grades: undefined,
+      },
+      include: {
+        grades: true,
+      },
+    });
+
+    expect(resSend).toHaveBeenCalledWith(assignmentDTO);
+  });
+
+  it("responds with valid record and creates grades", async () => {
     //when
     getStudentsMock.mockResolvedValue({ students: [{ id: "TestStudent01" }] });
     createMock.mockResolvedValue(rawAssignment);

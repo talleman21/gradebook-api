@@ -41,11 +41,6 @@ describe("subject-create", () => {
     expect(createMock).toHaveBeenCalledWith({
       data: {
         name: req.body.name,
-        curriculums: {
-          connect: req.body.curriculums.map(({ id }: { id: string }) => ({
-            id,
-          })),
-        },
       },
       include: {
         curriculums: true,

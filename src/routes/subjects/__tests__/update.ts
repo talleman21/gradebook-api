@@ -43,11 +43,6 @@ describe("subject-update", () => {
       where: { id: "1" },
       data: {
         name: req.body.name,
-        curriculums: {
-          connect: req.body.curriculums.map(({ id }: { id: string }) => ({
-            id,
-          })),
-        },
       },
       include: {
         curriculums: true,

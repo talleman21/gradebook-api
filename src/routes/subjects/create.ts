@@ -14,9 +14,6 @@ export const create = async (
     const createSubject = await prisma.subject.create({
       data: {
         name: subjectToCreate.name,
-        curriculums: {
-          connect: subjectToCreate.curriculums.map(({ id }) => ({ id })),
-        },
       },
       include: {
         curriculums: true,

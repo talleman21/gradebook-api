@@ -46,4 +46,13 @@ describe("grade-get-many", () => {
     //then
     expect(res.send).toHaveBeenCalledWith([]);
   });
+
+  it("calls next() if error thrown", async () => {
+    //when
+    findManyMock.mockRejectedValue("error");
+    await getMany(req, res, next);
+
+    //then
+    expect(next).toHaveBeenCalledWith("error");
+  });
 });
