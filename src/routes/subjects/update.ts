@@ -16,9 +16,6 @@ export const updateOne = async (
       where: { id },
       data: {
         name: subjectToUpdate.name,
-        curriculums: {
-          connect: subjectToUpdate.curriculums.map(({ id }) => ({ id })),
-        },
       },
       include: {
         curriculums: true,
