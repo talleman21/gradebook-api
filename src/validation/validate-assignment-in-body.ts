@@ -7,6 +7,7 @@ const assignmentInBodySchema = joi.object({
   description: joi.string().required(),
   dueDate: joi.date().default(new Date()).required(),
   curriculumId: joi.string().required(),
+  gradeIds: joi.array().items(joi.string()).default([]),
 });
 
 export const validateAssignmentInBody = async (

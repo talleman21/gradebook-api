@@ -139,4 +139,56 @@ describe("validate-assignment-in-body", () => {
       }
     });
   });
+
+  describe("validate gradeIds", () => {
+    it("rejects when gradeIds not passed", async () => {
+      //when
+      input.gradeIds = undefined;
+
+      //then
+      try {
+        await validateAssignmentInBody(input);
+      } catch (error) {
+        expect(error).toEqual(createError(400, '"gradeIds" is required'));
+      }
+    });
+
+    it("rejects when gradeIds is number", async () => {
+      //when
+      input.gradeIds = 1;
+
+      //then
+      try {
+        await validateAssignmentInBody(input);
+      } catch (error) {
+        expect(error).toEqual(createError(400, '"gradeIds" must be an array'));
+      }
+    });
+
+    it("rejects when gradeIds is string", async () => {
+      //when
+      input.gradeIds = "invalid string";
+
+      //then
+      try {
+        await validateAssignmentInBody(input);
+      } catch (error) {
+        expect(error).toEqual(createError(400, '"gradeIds" must be an array'));
+      }
+    });
+
+    it("rejects when gradeIds array has invalid values", async () => {
+      //when
+      input.gradeIds = [1];
+
+      //then
+      try {
+        await validateAssignmentInBody(input);
+      } catch (error) {
+        expect(error).toEqual(
+          createError(400, '"gradeIds[0]" must be a string')
+        );
+      }
+    });
+  });
 });
