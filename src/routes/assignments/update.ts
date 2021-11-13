@@ -13,7 +13,11 @@ export const updateOne = async (
     const assignmentUpdateBody = await validateAssignmentInBody(req.body);
     const updatedAssignment = await prisma.assignment.update({
       where: { id },
-      data: assignmentUpdateBody,
+      data: {
+        name: assignmentUpdateBody.name,
+        description: assignmentUpdateBody.description,
+        dueDate: assignmentUpdateBody.dueDate,
+      },
       include: {
         grades: true,
       },

@@ -47,7 +47,6 @@ model Assignment {
   dueDate      DateTime
   curriculum   Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
   curriculumId String
-
 }
 
 model Grade {
