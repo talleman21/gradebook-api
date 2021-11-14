@@ -34,6 +34,8 @@ describe("grade-get-many", () => {
     //given
     req.query._start = "0";
     req.query._end = "5";
+    req.query._sort = "id";
+    req.query._order = "desc";
     //when
     transactionMock.mockResolvedValue([1, [rawGrade]]);
     await getMany(req, res, next);
@@ -42,6 +44,7 @@ describe("grade-get-many", () => {
     expect(findManyMock).toHaveBeenCalledWith({
       skip: 0,
       take: 5,
+      orderBy: { id: "desc" },
       where: { assignmentId: "TestAssignment01" },
     });
     expect(countMock).toHaveBeenCalledWith(),
