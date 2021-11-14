@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../shared";
 import { getCurriculumDTO } from "../../formatters";
-import { validatePaginationInQuery } from "../../validation";
+import {
+  validatePaginationInQuery,
+  validateSortInQuery,
+} from "../../validation";
 
 export const getMany = async (
   req: Request,
@@ -10,11 +13,13 @@ export const getMany = async (
 ): Promise<void> => {
   try {
     const { skip, take } = await validatePaginationInQuery(req.query);
+    const { field, sortOrder } = await validateSortInQuery(req.query);
     const [count, curriculums] = await prisma.$transaction([
       prisma.curriculum.count(),
       prisma.curriculum.findMany({
         skip,
         take,
+        orderBy: { [field]: sortOrder },
         include: {
           subject: true,
           instructor: true,
