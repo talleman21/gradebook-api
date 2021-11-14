@@ -17,7 +17,7 @@ describe("validate-sort-in-query", () => {
       await validateSortInQuery({ _sort: "id", _order: "invalid" });
     } catch (error) {
       expect(error).toEqual(
-        createError(400, '"_order" must be one of [asc, desc]')
+        createError(400, '"_order" must be one of [ASC, DESC, asc, desc]')
       );
     }
   });

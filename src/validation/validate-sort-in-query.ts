@@ -5,7 +5,7 @@ import { Prisma } from "@prisma/client";
 const sortInQuerySchema = joi
   .object({
     _sort: joi.string(),
-    _order: joi.string().valid("asc", "desc"),
+    _order: joi.string().valid("ASC", "DESC", "asc", "desc"),
   })
   .unknown()
   .required();
@@ -17,7 +17,7 @@ export const validateSortInQuery = async (
     const result = await sortInQuerySchema.validateAsync(query);
     return {
       field: result._sort,
-      sortOrder: result._sort ? result._order : undefined,
+      sortOrder: result._sort ? result._order.toLowerCase() : undefined,
     };
   } catch (error) {
     throw createError(400, (error as Error).message);
