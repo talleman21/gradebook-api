@@ -4,12 +4,12 @@ import createError from "http-errors";
 describe("validate-sort-in-query", () => {
   it("returns a valid sort object", async () => {
     const output = await validateSortInQuery({ _sort: "id", _order: "asc" });
-    expect(output).toEqual({ field: "id", sortOrder: "asc" });
+    expect(output).toEqual({ id: "asc" });
   });
 
   it("returns undefined _order if _sort not provided", async () => {
     const output = await validateSortInQuery({ _order: "asc" });
-    expect(output).toEqual({ _sort: undefined, _order: undefined });
+    expect(output).toEqual(undefined);
   });
 
   it("throws error when invalid _order provided", async () => {

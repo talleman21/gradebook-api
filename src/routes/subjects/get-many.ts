@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../shared";
 import { getSubjectDTO } from "../../formatters";
 import {
+  validateFilterInQuery,
   validatePaginationInQuery,
   validateSortInQuery,
 } from "../../validation";
@@ -13,13 +14,20 @@ export const getMany = async (
 ) => {
   try {
     const { skip, take } = await validatePaginationInQuery(req.query);
-    const { field, sortOrder } = await validateSortInQuery(req.query);
+    const orderBy = await validateSortInQuery(req.query);
+    const filters = await validateFilterInQuery(req.query, [
+      "name",
+      "dueDate",
+      "curriculumId",
+    ]);
+
     const [count, subjects] = await prisma.$transaction([
       prisma.subject.count(),
       prisma.subject.findMany({
         skip,
         take,
-        orderBy: { [field]: sortOrder },
+        where: { AND: filters },
+        orderBy,
         include: {
           curriculums: true,
         },
