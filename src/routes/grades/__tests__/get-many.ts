@@ -16,7 +16,6 @@ describe("grade-get-many", () => {
   beforeEach(() => {
     rawGrade = getGrade01();
     req.query = {};
-    req.query.assignmentId = "TestAssignment01";
     next = jest.fn();
     res.send = jest.fn();
     res.header = jest.fn();
@@ -32,6 +31,7 @@ describe("grade-get-many", () => {
 
   it("responds with valid object array", async () => {
     //given
+    req.query.assignmentId = "TestAssignment01";
     req.query._start = "0";
     req.query._end = "5";
     req.query._sort = "id";
@@ -45,11 +45,33 @@ describe("grade-get-many", () => {
       skip: 0,
       take: 5,
       orderBy: { id: "desc" },
-      where: { assignmentId: "TestAssignment01" },
+      where: {
+        AND: [
+          {
+            assignmentId: { contains: "TestAssignment01", mode: "insensitive" },
+          },
+        ],
+      },
     });
     expect(countMock).toHaveBeenCalledWith(),
       expect(res.header).toHaveBeenCalledWith("X-Total-Count", "1");
     expect(res.send).toHaveBeenCalledWith([rawGrade]);
+  });
+
+  it("provides a filter if filter elements are present", async () => {
+    //given
+    req.query.studentId = "Bob";
+
+    //when
+    await getMany(req, res, next);
+
+    //then
+    expect(findManyMock).toHaveBeenCalledWith({
+      skip: 0,
+      take: 10,
+      where: { AND: [{ studentId: { contains: "Bob", mode: "insensitive" } }] },
+      orderBy: undefined,
+    });
   });
 
   it("responds with empty array if no records found", async () => {

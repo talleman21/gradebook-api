@@ -46,6 +46,7 @@ describe("assignment-get-many", () => {
     expect(findManyMock).toHaveBeenCalledWith({
       skip: 0,
       take: 5,
+      where: { AND: [] },
       orderBy: { id: "desc" },
       include: {
         grades: true,
@@ -54,6 +55,23 @@ describe("assignment-get-many", () => {
     expect(countMock).toHaveBeenCalledWith();
     expect(res.header).toHaveBeenCalledWith("X-Total-Count", "1");
     expect(res.send).toHaveBeenCalledWith([assignmentDTO]);
+  });
+
+  it("provides a filter if filter elements are present", async () => {
+    //given
+    req.query.name = "Bob";
+
+    //when
+    await getMany(req, res, next);
+
+    //then
+    expect(findManyMock).toHaveBeenCalledWith({
+      skip: 0,
+      take: 10,
+      where: { AND: [{ name: { contains: "Bob", mode: "insensitive" } }] },
+      orderBy: undefined,
+      include: { grades: true },
+    });
   });
 
   it("responds with empty array if no records found", async () => {
