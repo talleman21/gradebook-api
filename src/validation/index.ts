@@ -7,3 +7,4 @@ export * from "./validate-grade-in-body";
 export * from "./validate-id-in-params";
 export * from "./validate-pagination-in-query";
 export * from "./validate-sort-in-query";
+export * from "./validate-filter-in-query";

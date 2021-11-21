@@ -12,13 +12,13 @@ const sortInQuerySchema = joi
 
 export const validateSortInQuery = async (
   query: unknown
-): Promise<{ field: string; sortOrder: Prisma.SortOrder }> => {
+): Promise<{ [index: string]: Prisma.SortOrder } | undefined> => {
   try {
     const result = await sortInQuerySchema.validateAsync(query);
-    return {
-      field: result._sort,
-      sortOrder: result._sort ? result._order.toLowerCase() : undefined,
-    };
+    if (result._sort && result._order) {
+      return { [result._sort]: result._order.toLowerCase() };
+    }
+    return;
   } catch (error) {
     throw createError(400, (error as Error).message);
   }
