@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../shared";
 import { getAssignmentDTO } from "../../formatters";
-import { validatePaginationInQuery } from "../../validation";
+import {
+  validateFilterInQuery,
+  validatePaginationInQuery,
+} from "../../validation";
 import { validateSortInQuery } from "../../validation/validate-sort-in-query";
 
 export const getMany = async (
@@ -11,13 +14,20 @@ export const getMany = async (
 ): Promise<void> => {
   try {
     const { skip, take } = await validatePaginationInQuery(req.query);
-    const { field, sortOrder } = await validateSortInQuery(req.query);
+    const orderBy = await validateSortInQuery(req.query);
+    const filters = await validateFilterInQuery(req.query, [
+      "name",
+      "dueDate",
+      "curriculumId",
+    ]);
+
     const [count, assignments] = await prisma.$transaction([
       prisma.assignment.count(),
       prisma.assignment.findMany({
         skip,
         take,
-        orderBy: { [field]: sortOrder },
+        where: { AND: filters },
+        orderBy,
         include: {
           grades: true,
         },
