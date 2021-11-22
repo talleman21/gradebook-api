@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Account {
+  id String @id @default(cuid())
+  name String @unique
+  adminId String
+}
+
 model Instructor {
   id       String    @id @default(cuid())
   name     String
