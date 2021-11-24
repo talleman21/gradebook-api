@@ -1,3 +1,4 @@
+export * from "./validate-user-in-body";
 export * from "./validate-account-in-body";
 export * from "./validate-curriculum-in-body";
 export * from "./validate-assignment-in-body";

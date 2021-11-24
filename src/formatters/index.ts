@@ -1,3 +1,4 @@
+export * from "./user-dto";
 export * from "./account-dto";
 export * from "./assignment-dto";
 export * from "./curriculum-dto";

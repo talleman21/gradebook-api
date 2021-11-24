@@ -14,6 +14,7 @@ import {
   instructor,
   grade,
   account,
+  user,
 } from "./src/routes";
 
 app.use(express.json());
@@ -31,6 +32,7 @@ app.use("/", (req, res, next) => {
 });
 
 app.use("/accounts", account);
+app.use("/users", user);
 app.use("/instructors", instructor);
 app.use("/students", student);
 app.use("/subjects", subject);
