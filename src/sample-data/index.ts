@@ -1,4 +1,5 @@
 export * from "./students";
+export * from "./users";
 export * from "./accounts";
 export * from "./assignments";
 export * from "./curriculums";
