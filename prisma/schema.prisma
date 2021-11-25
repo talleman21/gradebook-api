@@ -15,6 +15,8 @@ model Account {
 
 model User {
   id         String      @id @default(cuid())
+  userName   String
+  password   String
   firstName  String
   lastName   String
   accountId  String
