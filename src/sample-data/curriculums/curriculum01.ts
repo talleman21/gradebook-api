@@ -21,7 +21,7 @@ export const getCurriculum01 = (): RawCurriculum => ({
   students: [
     {
       id: "TestStudent01",
-      name: "TestStudent01",
+      userId: "TestUser01",
     },
   ],
   assignments: [getAssignment01()],
