@@ -30,6 +30,58 @@ describe("validate-user-in-body", () => {
     }
   });
 
+  describe("validate userName", () => {
+    it("rejects when userName not passed", async () => {
+      //when
+      input.userName = undefined;
+
+      //then
+      try {
+        await validateUserInBody(input);
+      } catch (error) {
+        expect(error).toEqual(createError(400, '"userName" is required'));
+      }
+    });
+
+    it("rejects when userName is number", async () => {
+      //when
+      input.userName = 1;
+
+      //then
+      try {
+        await validateUserInBody(input);
+      } catch (error) {
+        expect(error).toEqual(createError(400, '"userName" must be a string'));
+      }
+    });
+  });
+
+  describe("validate password", () => {
+    it("rejects when password not passed", async () => {
+      //when
+      input.password = undefined;
+
+      //then
+      try {
+        await validateUserInBody(input);
+      } catch (error) {
+        expect(error).toEqual(createError(400, '"password" is required'));
+      }
+    });
+
+    it("rejects when password is number", async () => {
+      //when
+      input.password = 1;
+
+      //then
+      try {
+        await validateUserInBody(input);
+      } catch (error) {
+        expect(error).toEqual(createError(400, '"password" must be a string'));
+      }
+    });
+  });
+
   describe("validate firstName", () => {
     it("rejects when firstName not passed", async () => {
       //when
