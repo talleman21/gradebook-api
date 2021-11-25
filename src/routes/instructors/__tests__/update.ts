@@ -42,7 +42,7 @@ describe("instructor-update", () => {
     expect(updateMock).toHaveBeenCalledWith({
       where: { id: "1" },
       data: {
-        name: req.body.name,
+        userId: req.body.userId,
       },
       include: {
         curriculums: true,

@@ -13,7 +13,7 @@ export const create = async (
 
     const createInstructor = await prisma.instructor.create({
       data: {
-        name: instructorToCreate.name,
+        userId: instructorToCreate.userId,
       },
       include: { curriculums: true },
     });

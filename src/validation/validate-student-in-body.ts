@@ -3,7 +3,7 @@ import { Student } from "@prisma/client";
 import createError from "http-errors";
 
 const studentInBodySchema = joi.object({
-  name: joi.string().required(),
+  userId: joi.string().required(),
   curriculumIds: joi.array().items(joi.string()).default([]),
 });
 

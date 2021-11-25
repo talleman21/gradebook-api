@@ -13,7 +13,7 @@ export const create = async (
 
     const createStudent = await prisma.student.create({
       data: {
-        name: studentToCreate.name,
+        user: { connect: { id: studentToCreate.userId } },
         curriculums: {
           connect: studentToCreate.curriculumIds.map((curriculumId) => ({
             id: curriculumId,

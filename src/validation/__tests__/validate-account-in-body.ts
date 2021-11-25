@@ -55,30 +55,4 @@ describe("validate-account-in-body", () => {
       }
     });
   });
-
-  describe("validate adminId", () => {
-    it("rejects when adminId not passed", async () => {
-      //when
-      input.adminId = undefined;
-
-      //then
-      try {
-        await validateAccountInBody(input);
-      } catch (error) {
-        expect(error).toEqual(createError(400, '"adminId" is required'));
-      }
-    });
-
-    it("rejects when adminId is number", async () => {
-      //when
-      input.adminId = 1;
-
-      //then
-      try {
-        await validateAccountInBody(input);
-      } catch (error) {
-        expect(error).toEqual(createError(400, '"adminId" must be a string'));
-      }
-    });
-  });
 });
