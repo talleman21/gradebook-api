@@ -6,7 +6,7 @@ export const getStudentDTO = (
   if (student) {
     return {
       id: student.id,
-      name: student.name,
+      userId: student.userId,
       curriculumIds: student.curriculums.map(({ id }) => id),
     };
   }

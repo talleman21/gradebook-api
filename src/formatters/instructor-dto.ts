@@ -6,7 +6,7 @@ export const getInstructorDTO = (
   if (instructor) {
     return {
       id: instructor.id,
-      name: instructor.name,
+      userId: instructor.userId,
       curriculumIds: instructor.curriculums.map(({ id }) => id),
     };
   }

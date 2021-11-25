@@ -7,7 +7,6 @@ export const getAccountDTO = (
     return {
       id: account.id,
       name: account.name,
-      adminId: account.adminId,
     };
   }
   return null;
