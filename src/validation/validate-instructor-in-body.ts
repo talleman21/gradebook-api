@@ -3,7 +3,7 @@ import { Instructor } from "@prisma/client";
 import createError from "http-errors";
 
 const instructorInBodySchema = joi.object({
-  name: joi.string().required(),
+  userId: joi.string().required(),
 });
 
 export const validateInstructorInBody = async (

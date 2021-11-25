@@ -4,7 +4,6 @@ import createError from "http-errors";
 
 const accountInBodySchema = joi.object({
   name: joi.string().required(),
-  adminId: joi.string().required(),
 });
 
 export const validateAccountInBody = async (

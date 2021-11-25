@@ -30,28 +30,28 @@ describe("validate-student-in-body", () => {
     }
   });
 
-  describe("validate name", () => {
-    it("rejects when name not passed", async () => {
+  describe("validate userId", () => {
+    it("rejects when userId not passed", async () => {
       //when
-      input.name = undefined;
+      input.userId = undefined;
 
       //then
       try {
         await validateStudentInBody(input);
       } catch (error) {
-        expect(error).toEqual(createError(400, '"name" is required'));
+        expect(error).toEqual(createError(400, '"userId" is required'));
       }
     });
 
-    it("rejects when name is number", async () => {
+    it("rejects when userId is number", async () => {
       //when
-      input.name = 1;
+      input.userId = 1;
 
       //then
       try {
         await validateStudentInBody(input);
       } catch (error) {
-        expect(error).toEqual(createError(400, '"name" must be a string'));
+        expect(error).toEqual(createError(400, '"userId" must be a string'));
       }
     });
   });
