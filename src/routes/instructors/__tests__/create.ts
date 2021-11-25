@@ -40,7 +40,7 @@ describe("instructor-create", () => {
     //then
     expect(createMock).toHaveBeenCalledWith({
       data: {
-        name: req.body.name,
+        userId: req.body.userId,
       },
       include: {
         curriculums: true,

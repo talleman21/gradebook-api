@@ -15,7 +15,7 @@ export const updateOne = async (
     const updatedInstructor = await prisma.instructor.update({
       where: { id },
       data: {
-        name: instructorToUpdate.name,
+        userId: instructorToUpdate.userId,
       },
       include: {
         curriculums: true,

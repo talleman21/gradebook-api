@@ -15,7 +15,7 @@ export const updateOne = async (
     const updatedStudent = await prisma.student.update({
       where: { id },
       data: {
-        name: studentToUpdate.name,
+        user: { connect: { id: studentToUpdate.userId } },
         curriculums: {
           connect: studentToUpdate.curriculumIds.map((curriculumId) => ({
             id: curriculumId,

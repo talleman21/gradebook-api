@@ -42,7 +42,7 @@ describe("student-update", () => {
     expect(updateMock).toHaveBeenCalledWith({
       where: { id: "1" },
       data: {
-        name: req.body.name,
+        user: { connect: { id: req.body.userId } },
         curriculums: {
           connect: req.body.curriculumIds.map((curriculumId: string) => ({
             id: curriculumId,

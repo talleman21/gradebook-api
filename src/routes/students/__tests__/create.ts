@@ -40,7 +40,7 @@ describe("student-create", () => {
     //then
     expect(createMock).toHaveBeenCalledWith({
       data: {
-        name: req.body.name,
+        user: { connect: { id: req.body.userId } },
         curriculums: {
           connect: req.body.curriculumIds.map((curriculumId: string) => ({
             id: curriculumId,
