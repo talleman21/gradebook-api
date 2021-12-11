@@ -6,10 +6,13 @@ describe("validate-filter-in-query", () => {
     otherProperty: "otherProperty",
   };
 
-  let query: { [index: string]: string };
+  let query: { [index: string]: string | string[] };
 
   beforeEach(() => {
-    query = { name: "Bob", otherProperty: "I am otherProperty" };
+    query = {
+      name: "Bob",
+      otherProperty: ["I am otherProperty", "I am another otherProperty"],
+    };
   });
 
   it("returns a valid filter object", async () => {
@@ -20,7 +23,10 @@ describe("validate-filter-in-query", () => {
     expect(output).toEqual([
       { name: { in: ["Bob"], mode: "insensitive" } },
       {
-        otherProperty: { in: ["I am otherProperty"], mode: "insensitive" },
+        otherProperty: {
+          in: ["I am otherProperty", "I am another otherProperty"],
+          mode: "insensitive",
+        },
       },
     ]);
   });
