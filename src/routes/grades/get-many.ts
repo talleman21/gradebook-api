@@ -13,11 +13,16 @@ export const getMany = async (
   next: NextFunction
 ) => {
   try {
+    const modelEnum = Prisma.GradeScalarFieldEnum;
     const { skip, take } = await validatePaginationInQuery(req.query);
-    const orderBy = await validateSortInQuery(req.query);
-    const filters = await validateFilterInQuery<
-      typeof Prisma.GradeScalarFieldEnum
-    >(req.query, Prisma.GradeScalarFieldEnum);
+    const orderBy = await validateSortInQuery<typeof modelEnum>(
+      req.query,
+      modelEnum
+    );
+    const filters = await validateFilterInQuery<typeof modelEnum>(
+      req.query,
+      modelEnum
+    );
 
     console.log("filters", filters);
 

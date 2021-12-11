@@ -2,21 +2,25 @@ import joi from "joi";
 import createError from "http-errors";
 import { Prisma } from "@prisma/client";
 
-const sortInQuerySchema = joi
-  .object({
-    _sort: joi.string(),
-    _order: joi.string().valid("ASC", "DESC", "asc", "desc"),
-  })
-  .unknown()
-  .required();
+const sortInQuerySchema = <T>(validFields: T) => {
+  return joi
+    .object({
+      _sort: joi.string().valid(...Object.values(validFields)),
+      _order: joi.string().lowercase().valid("asc", "desc"),
+    })
+    .unknown()
+    .required();
+};
 
-export const validateSortInQuery = async (
-  query: unknown
+export const validateSortInQuery = async <T>(
+  query: unknown,
+  validFields: T
 ): Promise<{ [index: string]: Prisma.SortOrder } | undefined> => {
   try {
-    const result = await sortInQuerySchema.validateAsync(query);
+    const schema = sortInQuerySchema<T>(validFields);
+    const result = await schema.validateAsync(query);
     if (result._sort && result._order) {
-      return { [result._sort]: result._order.toLowerCase() };
+      return { [result._sort]: result._order };
     }
     return;
   } catch (error) {

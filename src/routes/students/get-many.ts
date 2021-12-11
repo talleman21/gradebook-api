@@ -14,11 +14,16 @@ export const getMany = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    const modelEnum = Prisma.StudentScalarFieldEnum;
     const { skip, take } = await validatePaginationInQuery(req.query);
-    const orderBy = await validateSortInQuery(req.query);
-    const filters = await validateFilterInQuery<
-      typeof Prisma.StudentScalarFieldEnum
-    >(req.query, Prisma.StudentScalarFieldEnum);
+    const orderBy = await validateSortInQuery<typeof modelEnum>(
+      req.query,
+      modelEnum
+    );
+    const filters = await validateFilterInQuery<typeof modelEnum>(
+      req.query,
+      modelEnum
+    );
 
     const [count, students] = await prisma.$transaction([
       prisma.student.count(),
