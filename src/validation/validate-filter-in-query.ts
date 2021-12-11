@@ -1,23 +1,29 @@
-import joi, { StringSchema } from "joi";
+import joi, { AlternativesSchema } from "joi";
 
 export const validateFilterInQuery = async <T>(
   query: unknown,
   filterFields: T
-): Promise<{ [index: string]: { contains: string; mode: string } }[]> => {
-  const filterObject: { [index: string]: StringSchema } = {};
-  Object.keys(filterFields).forEach(
-    (field) => (filterObject[field] = joi.string())
-  );
+): Promise<{ [index: string]: { in: string[]; mode: string } }[]> => {
+  const filterObject: { [index: string]: AlternativesSchema } = {};
+
+  // dynamically create schema. handles string or string[]
+  Object.keys(filterFields).forEach((field) => {
+    return (filterObject[field] = joi
+      .alternatives()
+      .try(joi.string(), joi.array().items(joi.string())));
+  });
 
   const filterInQuerySchema = joi.object(filterObject);
 
-  const result = await filterInQuerySchema.validateAsync(query, {
-    stripUnknown: true,
-  });
+  // validate schema
+  const result: { [index: string]: string | string[] } =
+    await filterInQuerySchema.validateAsync(query, {
+      stripUnknown: true,
+    });
 
   return Object.entries(result).map(([key, value]) => ({
     [key]: {
-      contains: value as string,
+      in: Array.isArray(value) ? (value as string[]) : [value as string],
       mode: "insensitive",
     },
   }));
