@@ -33,25 +33,25 @@ describe("validate-user-in-body", () => {
   describe("validate userName", () => {
     it("rejects when userName not passed", async () => {
       //when
-      input.userName = undefined;
+      input.username = undefined;
 
       //then
       try {
         await validateUserInBody(input);
       } catch (error) {
-        expect(error).toEqual(createError(400, '"userName" is required'));
+        expect(error).toEqual(createError(400, '"username" is required'));
       }
     });
 
     it("rejects when userName is number", async () => {
       //when
-      input.userName = 1;
+      input.username = 1;
 
       //then
       try {
         await validateUserInBody(input);
       } catch (error) {
-        expect(error).toEqual(createError(400, '"userName" must be a string'));
+        expect(error).toEqual(createError(400, '"username" must be a string'));
       }
     });
   });

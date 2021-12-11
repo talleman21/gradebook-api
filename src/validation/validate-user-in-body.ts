@@ -5,7 +5,7 @@ import createError from "http-errors";
 const userInBodySchema = joi.object({
   firstName: joi.string().required(),
   lastName: joi.string().required(),
-  userName: joi.string().required(),
+  username: joi.string().required(),
   password: joi.string().required(),
   accountId: joi.string().required(),
 });

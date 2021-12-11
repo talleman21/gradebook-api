@@ -15,7 +15,10 @@ export const create = async (
       data: {
         userId: instructorToCreate.userId,
       },
-      include: { curriculums: true },
+      include: {
+        curriculums: true,
+        user: true,
+      },
     });
 
     res.send(getInstructorDTO(createInstructor));

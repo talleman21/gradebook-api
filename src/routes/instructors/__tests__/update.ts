@@ -46,6 +46,7 @@ describe("instructor-update", () => {
       },
       include: {
         curriculums: true,
+        user: true,
       },
     });
 

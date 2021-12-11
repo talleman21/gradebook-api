@@ -38,6 +38,7 @@ describe("instructor-delete", () => {
       where: { id: "1" },
       include: {
         curriculums: true,
+        user: true,
       },
     });
     expect(resSend).toHaveBeenCalledWith(instructorDTO);

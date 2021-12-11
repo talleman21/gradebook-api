@@ -13,7 +13,7 @@ export const deleteOne = async (
 
     const deletedInstructor = await prisma.instructor.delete({
       where: { id },
-      include: { curriculums: true },
+      include: { user: true, curriculums: true },
     });
 
     res.send(getInstructorDTO(deletedInstructor));

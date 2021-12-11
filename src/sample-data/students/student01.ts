@@ -1,6 +1,6 @@
 import { Student } from "@prisma/client";
 import { RawStudent, StudentDTO } from "../../types";
-import { getCurriculum01 } from "..";
+import { getCurriculum01, getUser01 } from "..";
 
 export const getStudentBodyObject01 = (): Omit<Student, "id"> & {
   curriculumIds: string[];
@@ -11,12 +11,14 @@ export const getStudentBodyObject01 = (): Omit<Student, "id"> & {
 
 export const getStudent01 = (): RawStudent => ({
   id: "TestStudent01",
-  userId: "TestUser01",
+  userId: "TestStudentUserId",
+  user: getUser01(),
   curriculums: [getCurriculum01()],
 });
 
 export const getStudentDTO01 = (): StudentDTO => ({
   id: "TestStudent01",
-  userId: "TestUser01",
+  userId: "TestStudentUserId",
+  username: "TestUserUsername01",
   curriculumIds: ["TestCurriculum01"],
 });

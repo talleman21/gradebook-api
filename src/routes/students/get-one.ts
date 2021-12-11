@@ -14,6 +14,7 @@ export const getOne = async (
     const student = await prisma.student.findUnique({
       where: { id },
       include: {
+        user: true,
         curriculums: true,
       },
     });

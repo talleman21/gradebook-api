@@ -44,6 +44,7 @@ describe("instructor-create", () => {
       },
       include: {
         curriculums: true,
+        user: true,
       },
     });
 

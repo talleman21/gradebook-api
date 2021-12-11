@@ -51,6 +51,7 @@ describe("student-update", () => {
       },
       include: {
         curriculums: true,
+        user: true,
       },
     });
 
