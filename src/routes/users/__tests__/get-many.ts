@@ -56,7 +56,7 @@ describe("user-get-many", () => {
 
   it("provides a filter if filter elements are present", async () => {
     //given
-    req.query.name = "Bob";
+    req.query.username = "Bob";
 
     //when
     await getMany(req, res, next);
@@ -65,7 +65,7 @@ describe("user-get-many", () => {
     expect(findManyMock).toHaveBeenCalledWith({
       skip: 0,
       take: 10,
-      where: { AND: [{ name: { contains: "Bob", mode: "insensitive" } }] },
+      where: { AND: [{ username: { contains: "Bob", mode: "insensitive" } }] },
       orderBy: undefined,
     });
   });

@@ -1,6 +1,11 @@
 import { validateFilterInQuery } from "..";
 
 describe("validate-filter-in-query", () => {
+  const TestEnum = {
+    name: "name",
+    otherProperty: "otherProperty",
+  };
+
   let query: { [index: string]: string };
 
   beforeEach(() => {
@@ -8,10 +13,10 @@ describe("validate-filter-in-query", () => {
   });
 
   it("returns a valid filter object", async () => {
-    const output = await validateFilterInQuery(query, [
-      "name",
-      "otherProperty",
-    ]);
+    const output = await validateFilterInQuery<typeof TestEnum>(
+      query,
+      TestEnum
+    );
     expect(output).toEqual([
       { name: { contains: "Bob", mode: "insensitive" } },
       {

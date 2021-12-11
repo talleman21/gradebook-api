@@ -60,7 +60,7 @@ describe("student-get-many", () => {
 
   it("provides a filter if filter elements are present", async () => {
     //given
-    req.query.name = "Bob";
+    req.query.userId = "TestUserId";
 
     //when
     await getMany(req, res, next);
@@ -69,7 +69,9 @@ describe("student-get-many", () => {
     expect(findManyMock).toHaveBeenCalledWith({
       skip: 0,
       take: 10,
-      where: { AND: [{ name: { contains: "Bob", mode: "insensitive" } }] },
+      where: {
+        AND: [{ userId: { contains: "TestUserId", mode: "insensitive" } }],
+      },
       orderBy: undefined,
       include: { curriculums: true, user: true },
     });
