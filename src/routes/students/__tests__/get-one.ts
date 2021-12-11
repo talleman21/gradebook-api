@@ -38,6 +38,7 @@ describe("student-get", () => {
       where: { id: "1" },
       include: {
         curriculums: true,
+        user: true,
       },
     });
     expect(resSend).toHaveBeenCalledWith(studentDTO);

@@ -28,6 +28,7 @@ export const getMany = async (
         where: { AND: filters },
         orderBy: orderBy,
         include: {
+          user: true,
           curriculums: true,
         },
       }),

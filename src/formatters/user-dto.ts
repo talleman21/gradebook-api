@@ -4,7 +4,7 @@ export const getUserDTO = (user: RawUser | null): UserDTO | null => {
   if (user) {
     return {
       id: user.id,
-      userName: user.userName,
+      username: user.username,
       password: user.password,
       firstName: user.firstName,
       lastName: user.lastName,

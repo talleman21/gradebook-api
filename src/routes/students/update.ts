@@ -23,6 +23,7 @@ export const updateOne = async (
         },
       },
       include: {
+        user: true,
         curriculums: true,
       },
     });

@@ -50,6 +50,7 @@ describe("student-get-many", () => {
       where: { AND: [] },
       include: {
         curriculums: true,
+        user: true,
       },
     });
     expect(countMock).toHaveBeenCalledWith();
@@ -70,7 +71,7 @@ describe("student-get-many", () => {
       take: 10,
       where: { AND: [{ name: { contains: "Bob", mode: "insensitive" } }] },
       orderBy: undefined,
-      include: { curriculums: true },
+      include: { curriculums: true, user: true },
     });
   });
 

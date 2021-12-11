@@ -18,6 +18,7 @@ export const updateOne = async (
         userId: instructorToUpdate.userId,
       },
       include: {
+        user: true,
         curriculums: true,
       },
     });

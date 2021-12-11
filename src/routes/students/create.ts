@@ -21,6 +21,7 @@ export const create = async (
         },
       },
       include: {
+        user: true,
         curriculums: true,
       },
     });
