@@ -18,9 +18,9 @@ describe("validate-filter-in-query", () => {
       TestEnum
     );
     expect(output).toEqual([
-      { name: { contains: "Bob", mode: "insensitive" } },
+      { name: { in: ["Bob"], mode: "insensitive" } },
       {
-        otherProperty: { contains: "I am otherProperty", mode: "insensitive" },
+        otherProperty: { in: ["I am otherProperty"], mode: "insensitive" },
       },
     ]);
   });

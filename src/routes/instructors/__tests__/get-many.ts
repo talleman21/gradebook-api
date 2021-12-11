@@ -70,7 +70,7 @@ describe("instructor-get-many", () => {
       skip: 0,
       take: 10,
       where: {
-        AND: [{ userId: { contains: "TestUserId", mode: "insensitive" } }],
+        AND: [{ userId: { in: ["TestUserId"], mode: "insensitive" } }],
       },
       orderBy: undefined,
       include: { curriculums: true, user: true },

@@ -65,7 +65,7 @@ describe("user-get-many", () => {
     expect(findManyMock).toHaveBeenCalledWith({
       skip: 0,
       take: 10,
-      where: { AND: [{ username: { contains: "Bob", mode: "insensitive" } }] },
+      where: { AND: [{ username: { in: ["Bob"], mode: "insensitive" } }] },
       orderBy: undefined,
     });
   });

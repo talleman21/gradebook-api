@@ -69,7 +69,7 @@ describe("subject-get-many", () => {
     expect(findManyMock).toHaveBeenCalledWith({
       skip: 0,
       take: 10,
-      where: { AND: [{ name: { contains: "Bob", mode: "insensitive" } }] },
+      where: { AND: [{ name: { in: ["Bob"], mode: "insensitive" } }] },
       orderBy: undefined,
       include: { curriculums: true },
     });

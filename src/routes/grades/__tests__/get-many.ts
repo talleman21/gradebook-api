@@ -48,7 +48,7 @@ describe("grade-get-many", () => {
       where: {
         AND: [
           {
-            assignmentId: { contains: "TestAssignment01", mode: "insensitive" },
+            assignmentId: { in: ["TestAssignment01"], mode: "insensitive" },
           },
         ],
       },
@@ -69,7 +69,7 @@ describe("grade-get-many", () => {
     expect(findManyMock).toHaveBeenCalledWith({
       skip: 0,
       take: 10,
-      where: { AND: [{ studentId: { contains: "Bob", mode: "insensitive" } }] },
+      where: { AND: [{ studentId: { in: ["Bob"], mode: "insensitive" } }] },
       orderBy: undefined,
     });
   });
