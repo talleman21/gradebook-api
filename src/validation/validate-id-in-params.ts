@@ -1,5 +1,4 @@
 import joi from "joi";
-import createError from "http-errors";
 
 const idInParamsSchema = joi
   .object({
@@ -9,10 +8,6 @@ const idInParamsSchema = joi
   .required();
 
 export const validateIdInParams = async (params: unknown): Promise<string> => {
-  try {
-    const result = await idInParamsSchema.validateAsync(params);
-    return result.id;
-  } catch (error) {
-    throw createError(400, (error as Error).message);
-  }
+  const result = await idInParamsSchema.validateAsync(params);
+  return result.id;
 };

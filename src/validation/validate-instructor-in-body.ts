@@ -3,13 +3,12 @@ import { Instructor } from "@prisma/client";
 import createError from "http-errors";
 
 const instructorInBodySchema = joi.object({
-  name: joi.string().required(),
-  studentIds: joi.array().items(joi.string()).default([]),
+  userId: joi.string().required(),
 });
 
 export const validateInstructorInBody = async (
-  body: Omit<Instructor, "id">
-): Promise<Omit<Instructor, "id"> & { studentIds: string[] }> => {
+  body: unknown
+): Promise<Omit<Instructor, "id">> => {
   try {
     const result = await instructorInBodySchema.validateAsync(body);
     return result;

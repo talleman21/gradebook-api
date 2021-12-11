@@ -3,16 +3,18 @@
     "@prisma/client": "^3.2.1",
     "@types/http-errors": "^1.8.1",
     "@types/jest": "^27.0.2",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "http-errors": "^1.8.0",
     "joi": "^17.4.2",
     "prisma": "^3.2.1"
   },
   "scripts": {
-    "start": "cross-env DB_PORT=5432 && yarn test-db-up && sleep 3 && dotenv ts-node-dev server.ts",
+    "start": "dotenv ts-node server.ts",
+    "dev": "cross-env DB_PORT=5432 && yarn test-db-up && sleep 3 && dotenv ts-node-dev server.ts",
     "test-db-up": "docker-compose -p gradebook -f ./docker/docker-compose.test.yaml up -d && sleep 2 && yarn db-migrate",
     "db-migrate": "npx prisma migrate dev",
-    "test": "jest",
+    "test": "jest --coverage",
     "format": "yarn run eslint --fix src && yarn prettier --write src",
     "prepare": "husky install"
   },
@@ -21,6 +23,7 @@
   "description": "gradebook app api",
   "main": "server.ts",
   "devDependencies": {
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/node": "^16.10.9",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
