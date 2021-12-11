@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../../shared";
 import { getSubjectDTO } from "../../formatters";
 import {
@@ -15,11 +16,9 @@ export const getMany = async (
   try {
     const { skip, take } = await validatePaginationInQuery(req.query);
     const orderBy = await validateSortInQuery(req.query);
-    const filters = await validateFilterInQuery(req.query, [
-      "name",
-      "dueDate",
-      "curriculumId",
-    ]);
+    const filters = await validateFilterInQuery<
+      typeof Prisma.SubjectScalarFieldEnum
+    >(req.query, Prisma.SubjectScalarFieldEnum);
 
     const [count, subjects] = await prisma.$transaction([
       prisma.subject.count(),

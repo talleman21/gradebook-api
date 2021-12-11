@@ -1,11 +1,13 @@
 import joi, { StringSchema } from "joi";
 
-export const validateFilterInQuery = async (
+export const validateFilterInQuery = async <T>(
   query: unknown,
-  filterFields: string[]
+  filterFields: T
 ): Promise<{ [index: string]: { contains: string; mode: string } }[]> => {
   const filterObject: { [index: string]: StringSchema } = {};
-  filterFields.forEach((field) => (filterObject[field] = joi.string()));
+  Object.keys(filterFields).forEach(
+    (field) => (filterObject[field] = joi.string())
+  );
 
   const filterInQuerySchema = joi.object(filterObject);
 

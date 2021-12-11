@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Prisma } from "@prisma/client";
 import { getStudentDTO } from "../../formatters";
 import { prisma } from "../../shared";
 import {
@@ -15,10 +16,9 @@ export const getMany = async (
   try {
     const { skip, take } = await validatePaginationInQuery(req.query);
     const orderBy = await validateSortInQuery(req.query);
-    const filters = await validateFilterInQuery(req.query, [
-      "name",
-      "curriculumIds",
-    ]);
+    const filters = await validateFilterInQuery<
+      typeof Prisma.StudentScalarFieldEnum
+    >(req.query, Prisma.StudentScalarFieldEnum);
 
     const [count, students] = await prisma.$transaction([
       prisma.student.count(),
