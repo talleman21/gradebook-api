@@ -28,6 +28,7 @@ app.use(
 app.use("/", (req, res, next) => {
   console.log("req", req.body);
   console.log("query", req.query);
+  console.log(process.env.test_var);
   next();
 });
 
